@@ -97,7 +97,7 @@ void ConsoleHandler::SetupDelegates(ConsoleChangeDelegate consoleChangeDelegate,
 
 //////////////////////////////////////////////////////////////////////////////
 
-void ConsoleHandler::RunAsAdministrator(const wstring& strCommandLineParams)
+void ConsoleHandler::RunAsAdministrator(const std::wstring& strCommandLineParams)
 {
 	std::wstring strFile = Helpers::GetModuleFileName(nullptr);
 
@@ -120,7 +120,7 @@ void ConsoleHandler::RunAsAdministrator(const wstring& strCommandLineParams)
 
 void ConsoleHandler::RunAsUser
 (
-	const wstring& strCommandLineParams,
+	const std::wstring& strCommandLineParams,
 	const UserCredentials& userCredentials
 )
 {
@@ -230,7 +230,7 @@ std::wstring MergeEnvironmentVariables(
 void ConsoleHandler::CreateShellProcess
 (
 	const ConsoleOptions& consoleOptions,
-	const wstring& strShell,
+	const std::wstring& strShell,
 	const UserCredentials& userCredentials,
 	const std::vector<std::shared_ptr<VarEnv>>& extraEnv,
 	PROCESS_INFORMATION& pi
@@ -355,7 +355,7 @@ void ConsoleHandler::CreateShellProcess
 				consoleOptions.strEnvironment.c_str()),
 		embededEnv);
 
-	wstring	strShellCmdLine(strShell);
+	std::wstring strShellCmdLine(strShell);
 
 	if( strShellCmdLine.empty() )
 	{
@@ -369,7 +369,7 @@ void ConsoleHandler::CreateShellProcess
 		strShellCmdLine += consoleOptions.strShellArguments;
 	}
 
-	wstring strStartupDir = Helpers::ExpandEnvironmentStrings(strNewEnvironment.c_str(), consoleOptions.strInitialDir);
+	std::wstring strStartupDir = Helpers::ExpandEnvironmentStrings(strNewEnvironment.c_str(), consoleOptions.strInitialDir);
 
 	if( !strStartupDir.empty() )
 	{
@@ -396,7 +396,7 @@ void ConsoleHandler::CreateShellProcess
 		}
 	}
 
-	wstring strCmdLine = Helpers::ExpandEnvironmentStrings(strNewEnvironment.c_str(), strShellCmdLine);
+	std::wstring strCmdLine = Helpers::ExpandEnvironmentStrings(strNewEnvironment.c_str(), strShellCmdLine);
 
 	// setup the startup info struct
 	STARTUPINFO si;
@@ -476,7 +476,7 @@ void ConsoleHandler::CreateShellProcess
 void ConsoleHandler::StartShellProcess
 (
 	const ConsoleOptions& consoleOptions,
-	const wstring& strShell,
+	const std::wstring& strShell,
 	const UserCredentials& userCredentials,
 	const std::vector<std::shared_ptr<VarEnv>>& extraEnv,
 	DWORD dwStartupRows,
@@ -671,8 +671,8 @@ void ConsoleHandler::StartShellProcess
 void ConsoleHandler::StartShellProcessAsAdministrator
 (
 	const ConsoleOptions& consoleOptions,
-	const wstring& strSyncName,
-	const wstring& strShell,
+	const std::wstring& strSyncName,
+	const std::wstring& strShell,
 	const std::vector<std::shared_ptr<VarEnv>>& extraEnv
 )
 {
@@ -1135,7 +1135,7 @@ std::wstring ConsoleHandler::DumpCurrentUserEnvironmentBlock()
 
 //////////////////////////////////////////////////////////////////////////////
 
-bool ConsoleHandler::CreateSharedObjects(DWORD dwConsoleProcessId, const wstring& strUser)
+bool ConsoleHandler::CreateSharedObjects(DWORD dwConsoleProcessId, const std::wstring& strUser)
 {
 	// create startup params shared memory
 	m_consoleParams.Create((SharedMemNames::formatConsoleParams % dwConsoleProcessId).str(), 1, syncObjBoth, strUser);
@@ -1222,7 +1222,7 @@ void ConsoleHandler::CreateWatchdog()
 void ConsoleHandler::InjectHookDLL(PROCESS_INFORMATION& pi)
 {
 	// allocate memory for parameter in the remote process
-	wstring				strHookDllPath(Helpers::GetModulePath(NULL, true));
+	std::wstring strHookDllPath(Helpers::GetModulePath(NULL, true));
 
 	CONTEXT		context;
 	
@@ -1249,12 +1249,12 @@ void ConsoleHandler::InjectHookDLL(PROCESS_INFORMATION& pi)
 	if (isWow64Process)
 	{
 		// starting a 32-bit process from a 64-bit console
-		strHookDllPath += wstring(L"ConsoleHook32.dll");
+		strHookDllPath += std::wstring(L"ConsoleHook32.dll");
 	}
 	else
 	{
 		// same bitness :-)
-		strHookDllPath += wstring(L"ConsoleHook.dll");
+		strHookDllPath += std::wstring(L"ConsoleHook.dll");
 	}
 
   if (::GetFileAttributes(strHookDllPath.c_str()) == INVALID_FILE_ATTRIBUTES)
@@ -1281,7 +1281,7 @@ void ConsoleHandler::InjectHookDLL(PROCESS_INFORMATION& pi)
 			Win32Exception::ThrowFromLastError("VirtualAllocEx");
 
 		// get 32-bit kernel32
-		wstring strConsoleWowPath(Helpers::GetModulePath(NULL, true) + wstring(L"ConsoleWow.exe"));
+		std::wstring strConsoleWowPath(Helpers::GetModulePath(NULL, true) + std::wstring(L"ConsoleWow.exe"));
 
 		STARTUPINFO siWow;
 		::ZeroMemory(&siWow, sizeof(STARTUPINFO));
@@ -1480,7 +1480,7 @@ void ConsoleHandler::InjectHookDLL(PROCESS_INFORMATION& pi)
 void ConsoleHandler::InjectHookDLL2(PROCESS_INFORMATION& pi)
 {
 	// allocate memory for parameter in the remote process
-	wstring   strHookDllPath(Helpers::GetModulePath(NULL, true));
+	std::wstring strHookDllPath(Helpers::GetModulePath(NULL, true));
 	UINT_PTR  fnLoadLibrary	= NULL;
 	void*     mem = NULL;
 	size_t    memLen = 0;
@@ -1496,12 +1496,12 @@ void ConsoleHandler::InjectHookDLL2(PROCESS_INFORMATION& pi)
 	if (isWow64Process)
 	{
 		// starting a 32-bit process from a 64-bit console
-		strHookDllPath += wstring(L"ConsoleHook32.dll");
+		strHookDllPath += std::wstring(L"ConsoleHook32.dll");
 	}
 	else
 	{
 		// same bitness :-)
-		strHookDllPath += wstring(L"ConsoleHook.dll");
+		strHookDllPath += std::wstring(L"ConsoleHook.dll");
 	}
 
 	if (::GetFileAttributes(strHookDllPath.c_str()) == INVALID_FILE_ATTRIBUTES)
@@ -1512,7 +1512,7 @@ void ConsoleHandler::InjectHookDLL2(PROCESS_INFORMATION& pi)
 	if (isWow64Process)
 	{
 		// get 32-bit kernel32
-		wstring strConsoleWowPath(Helpers::GetModulePath(NULL, true) + wstring(L"ConsoleWow.exe"));
+		std::wstring strConsoleWowPath(Helpers::GetModulePath(NULL, true) + std::wstring(L"ConsoleWow.exe"));
 
 		STARTUPINFO siWow;
 		::ZeroMemory(&siWow, sizeof(STARTUPINFO));

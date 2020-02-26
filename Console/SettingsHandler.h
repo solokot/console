@@ -47,8 +47,8 @@ struct ConsoleSettings : public SettingsBase
 
 	ConsoleSettings& operator=(const ConsoleSettings& other);
 
-	wstring		strShell;
-	wstring		strInitialDir;
+	std::wstring		strShell;
+	std::wstring		strInitialDir;
 
 	DWORD		dwRefreshInterval;
 	DWORD		dwChangeRefreshInterval;
@@ -104,7 +104,7 @@ struct FontSettings : public SettingsBase
 
 	FontSettings& operator=(const FontSettings& other);
 
-	wstring			strName;
+	std::wstring	strName;
 	DWORD			dwSize;
 	DWORD			dwExtraWidth;
 	bool			bBold;
@@ -131,10 +131,10 @@ struct WindowSettings : public SettingsBase
 
 	WindowSettings& operator=(const WindowSettings& other);
 
-	wstring			strTitle;
-	wstring			strIcon;
-	wstring			strMainTitleFormat;
-	wstring			strTabTitleFormat;
+	std::wstring	strTitle;
+	std::wstring	strIcon;
+	std::wstring	strMainTitleFormat;
+	std::wstring	strTabTitleFormat;
 	bool			bUseTabIcon;
 	bool			bUseTabTitles;
 	DWORD			dwTrimTabTitles;
@@ -643,7 +643,7 @@ struct HotKeys : public SettingsBase
 
 	struct CommandData
 	{
-		CommandData(const wstring& command, WORD commandID, const UINT descriptionID, bool global = false)
+		CommandData(const std::wstring& command, WORD commandID, const UINT descriptionID, bool global = false)
 		: strCommand(command)
 		, wCommandID(commandID)
 		, strDescription(Helpers::LoadString(descriptionID))
@@ -703,13 +703,13 @@ struct HotKeys : public SettingsBase
       return strHotKeyName;
     }
 
-		wstring	strCommand;
-		WORD	wCommandID;
-		wstring	strDescription;
-		ACCEL	accelHotkey;
-		bool	bExtended;
-		bool	bGlobal;
-		bool	bWin;
+		std::wstring	strCommand;
+		WORD			wCommandID;
+		std::wstring	strDescription;
+		ACCEL			accelHotkey;
+		bool			bExtended;
+		bool			bGlobal;
+		bool			bWin;
 	};
 
 	struct command{};
@@ -720,7 +720,7 @@ struct HotKeys : public SettingsBase
 				indexed_by
 				<
 					sequenced<>,
-					ordered_unique<tag<command>,	member<CommandData, wstring, &CommandData::strCommand> >,
+					ordered_unique<tag<command>,	member<CommandData, std::wstring, &CommandData::strCommand> >,
 					ordered_unique<tag<commandID>,	member<CommandData, WORD, &CommandData::wCommandID> >
 				> >									Commands;
 
@@ -817,17 +817,17 @@ struct MouseSettings : public SettingsBase
 
 	struct CommandData
 	{
-		CommandData(Command cmd, wstring strCmd, const UINT descriptionID)
+		CommandData(Command cmd, std::wstring strCmd, const UINT descriptionID)
 		: command(cmd)
 		, strCommand(strCmd)
 		, strDescription(Helpers::LoadString(descriptionID))
 		{
 		}
 
-		Command	command;
-		wstring	strCommand;
-		wstring	strDescription;
-		Action	action;
+		Command			command;
+		std::wstring	strCommand;
+		std::wstring	strDescription;
+		Action			action;
 	};
 
 	struct commandID{};
@@ -838,7 +838,7 @@ struct MouseSettings : public SettingsBase
 				indexed_by
 				<
 					sequenced<>,
-					ordered_unique<tag<commandName>,		member<CommandData, wstring, &CommandData::strCommand> >,
+					ordered_unique<tag<commandName>,		member<CommandData, std::wstring, &CommandData::strCommand> >,
 					ordered_unique<tag<commandID>,			member<CommandData, Command, &CommandData::command> >
 				> >									Commands;
 
@@ -927,16 +927,16 @@ struct TabData
 	}
 
 	// custom shell settings
-	wstring							strTitle;
-	wstring							strIcon;
+	std::wstring					strTitle;
+	std::wstring					strIcon;
 	bool							bUseDefaultIcon;
 	HWND							hwnd;
 
-	wstring							strShell;
-	wstring							strInitialDir;
+	std::wstring					strShell;
+	std::wstring					strInitialDir;
 	DWORD							dwBasePriority;
 	bool							bRunAsUser;
-	wstring							strUser;
+	std::wstring							strUser;
 	bool							bNetOnly;
 	bool							bRunAsAdministrator;
 	bool							bCloneable;
@@ -1085,7 +1085,7 @@ struct TabData
 
 //////////////////////////////////////////////////////////////////////////////
 
-typedef vector<std::shared_ptr<TabData> >	TabDataVector;
+typedef std::vector<std::shared_ptr<TabData> >	TabDataVector;
 
 struct TabSettings : public SettingsBase
 {
@@ -1141,7 +1141,7 @@ class SettingsHandler
 
 	public:
 
-		bool LoadSettings(const wstring& strSettingsFileName);
+		bool LoadSettings(const std::wstring& strSettingsFileName);
 		bool SaveSettings();
 		bool SerializeSettings(CComPtr<IXMLDOMElement>& pSettingsRoot);
 
@@ -1170,8 +1170,8 @@ class SettingsHandler
 
 	private:
 
-		wstring				m_strSettingsPath;
-		wstring				m_strSettingsFileName;
+		std::wstring		m_strSettingsPath;
+		std::wstring		m_strSettingsFileName;
 
 		SettingsDirType		m_settingsDirType;
 

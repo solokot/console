@@ -127,7 +127,6 @@ an alternative solution is to add an additional library to your linker input, le
 #include <regex>
 #include <chrono>
 #include <filesystem>
-using namespace std;
 #pragma warning(pop)
 
 #pragma warning(push)

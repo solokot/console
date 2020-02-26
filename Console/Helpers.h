@@ -27,14 +27,14 @@ class Helpers
 {
 	public:
 
-		static wstring GetModulePath(HINSTANCE hInstance, bool boolTrailingPathDelimiter);
-		static wstring GetModuleFileName(HINSTANCE hInstance);
+		static std::wstring GetModulePath(HINSTANCE hInstance, bool boolTrailingPathDelimiter);
+		static std::wstring GetModuleFileName(HINSTANCE hInstance);
 
-		static wstring GetCurrentDirectory(void);
-		static wstring EscapeCommandLineArg(const wstring& str);
+		static std::wstring GetCurrentDirectory(void);
+		static std::wstring EscapeCommandLineArg(const std::wstring& str);
 
-		static wstring ExpandEnvironmentStrings(const wstring& str);
-		static wstring ExpandEnvironmentStringsForUser(HANDLE userToken, const wstring& str);
+		static std::wstring ExpandEnvironmentStrings(const std::wstring& str);
+		static std::wstring ExpandEnvironmentStringsForUser(HANDLE userToken, const std::wstring& str);
 
 		static std::wstring ExpandEnvironmentStrings(const wchar_t * envb, const std::wstring & str);
 		static const wchar_t * GetEnvironmentVariable(const wchar_t * envb, const wchar_t * str, size_t len = SIZE_MAX);
@@ -54,8 +54,8 @@ class Helpers
 		static std::wstring LoadFileFilter(UINT uID);
 		static void LoadCombo(CComboBox& cb, UINT uID);
 
-		static HICON LoadTabIcon(bool bBigIcon, bool bUseDefaultIcon, const wstring& strIcon, const wstring& strShell);
-		static HICON LoadIcon(bool bBigIcon, const wstring& strIcon);
+		static HICON LoadTabIcon(bool bBigIcon, bool bUseDefaultIcon, const std::wstring& strIcon, const std::wstring& strShell);
+		static HICON LoadIcon(bool bBigIcon, const std::wstring& strIcon);
 
 		static bool IsElevated(void);
 		static bool CheckOSVersion(DWORD dwMinMajorVersion, DWORD dwMinMinorVersion);

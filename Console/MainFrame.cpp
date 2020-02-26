@@ -38,56 +38,56 @@ void MainFrame::ParseCommandLine
 
 	for (int i = 0; i < argc; ++i)
 	{
-		if (wstring(argv[i]) == wstring(L"-w"))
+		if (std::wstring(argv[i]) == std::wstring(L"-w"))
 		{
 			// window title
 			++i;
 			if (i == argc) break;
 			commandLineOptions.strWindowTitle = argv[i];
 		}
-		if (wstring(argv[i]) == wstring(L"-ws"))
+		if (std::wstring(argv[i]) == std::wstring(L"-ws"))
 		{
 			// startup workspace
 			++i;
 			if (i == argc) break;
 			commandLineOptions.startupWorkspaces.push_back(argv[i]);
 		}
-		else if (wstring(argv[i]) == wstring(L"-t"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-t"))
 		{
 			// startup tab type
 			++i;
 			if (i == argc) break;
 			commandLineOptions.startupTabs.push_back(argv[i]);
 		}
-		else if (wstring(argv[i]) == wstring(L"-n"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-n"))
 		{
 			// startup tab title (name)
 			++i;
 			if (i == argc) break;
 			commandLineOptions.startupTabTitles.push_back(argv[i]);
 		}
-		else if (wstring(argv[i]) == wstring(L"-d"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-d"))
 		{
 			// startup dir
 			++i;
 			if (i == argc) break;
 			commandLineOptions.startupDirs.push_back(argv[i]);
 		}
-		else if (wstring(argv[i]) == wstring(L"-r"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-r"))
 		{
 			// startup cmd
 			++i;
 			if (i == argc) break;
 			commandLineOptions.startupShellArgs.push_back(argv[i]);
 		}
-		else if (wstring(argv[i]) == wstring(L"-p"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-p"))
 		{
 			// startup priority
 			++i;
 			if (i == argc) break;
 			commandLineOptions.basePriorities.push_back(TabData::StringToPriority(argv[i]));
 		}
-		else if (wstring(argv[i]) == wstring(L"-ts"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-ts"))
 		{
 			// startup tab sleep for multiple tabs
 			++i;
@@ -95,7 +95,7 @@ void MainFrame::ParseCommandLine
 			commandLineOptions.nMultiStartSleep = _wtoi(argv[i]);
 			if (commandLineOptions.nMultiStartSleep < 0) commandLineOptions.nMultiStartSleep = 500;
 		}
-		else if( wstring(argv[i]) == wstring(L"-v") )
+		else if (std::wstring(argv[i]) == std::wstring(L"-v"))
 		{
 			// ConsoleZ visibility
 			++i;
@@ -104,14 +104,14 @@ void MainFrame::ParseCommandLine
 			else if( _wcsicmp(L"Hide",   argv[i]) == 0 ) commandLineOptions.visibility = ShowHideWindowAction::SHWA_HIDE_ONLY;
 			else if( _wcsicmp(L"Switch", argv[i]) == 0 ) commandLineOptions.visibility = ShowHideWindowAction::SHWA_SWITCH;
 		}
-		else if (wstring(argv[i]) == wstring(L"-cwd"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-cwd"))
 		{
 			// current working directory
 			++i;
 			if (i == argc) break;
 			commandLineOptions.strWorkingDir = argv[i];
 		}
-		else if (wstring(argv[i]) == wstring(L"-ebx"))
+		else if (std::wstring(argv[i]) == std::wstring(L"-ebx"))
 		{
 			// environment block
 			++i;
@@ -151,7 +151,7 @@ void MainFrame::ParseCommandLine
 				}
 			}
 		}
-		else if( std::wstring(argv[i]) == std::wstring(L"-attach") )
+		else if (std::wstring(argv[i]) == std::wstring(L"-attach"))
 		{
 			// attach consoles
 			commandLineOptions.bAttachConsoles = true;
@@ -1488,7 +1488,7 @@ LRESULT MainFrame::OnSettingChange(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lPar
 
 	if (lParam == 0) return 0;
 
-	wstring strArea(reinterpret_cast<wchar_t*>(lParam));
+	std::wstring strArea(reinterpret_cast<wchar_t*>(lParam));
 
 	// according to WM_SETTINGCHANGE doc:
 	// to change environment, lParam should be "Environment"
@@ -1809,7 +1809,7 @@ void MainFrame::UpdateTabTitle(std::shared_ptr<TabView> tabView)
 
 	WindowSettings& windowSettings = g_settingsHandler->GetAppearanceSettings().windowSettings;
 
-	wstring strTabTitle = FormatTitle(windowSettings.strTabTitleFormat, tabView.get(), consoleView);
+	std::wstring strTabTitle = FormatTitle(windowSettings.strTabTitleFormat, tabView.get(), consoleView);
 
 	unsigned long long ullProgressCompleted = 0ULL;
 	unsigned long long ullProgressTotal     = 0ULL;
@@ -3654,7 +3654,7 @@ LRESULT MainFrame::OnDumpBuffer(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndC
 
 LRESULT MainFrame::OnHelp(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	::HtmlHelp(m_hWnd, (Helpers::GetModulePath(NULL, true) + wstring(L"console.chm")).c_str(), HH_DISPLAY_TOPIC, NULL);
+	::HtmlHelp(m_hWnd, (Helpers::GetModulePath(NULL, true) + std::wstring(L"console.chm")).c_str(), HH_DISPLAY_TOPIC, NULL);
 	return 0;
 }
 
@@ -5221,7 +5221,7 @@ void MainFrame::CreateStatusBar()
 BOOL MainFrame::SetTrayIcon(DWORD dwMessage) {
 	
 	NOTIFYICONDATA	tnd;
-	wstring			strToolTip(m_strWindowTitle);
+	std::wstring	strToolTip(m_strWindowTitle);
 
 	tnd.cbSize				= sizeof(NOTIFYICONDATA);
 	tnd.hWnd				= m_hWnd;
@@ -5769,7 +5769,7 @@ LRESULT MainFrame::OnSaveWorkspace(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool MainFrame::LoadWorkspace(const wstring& filename)
+bool MainFrame::LoadWorkspace(const std::wstring& filename)
 {
 	bool bAtLeastOneStarted = false;
 
@@ -5863,7 +5863,7 @@ bool MainFrame::LoadWorkspace(const wstring& filename)
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool MainFrame::SaveWorkspace(const wstring& filename)
+bool MainFrame::SaveWorkspace(const std::wstring& filename)
 {
 	CComPtr<IXMLDOMDocument> pWorkspaceDocument;
 	CComPtr<IXMLDOMElement>  pWorkspaceRoot;

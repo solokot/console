@@ -247,7 +247,7 @@ void DlgSettingsMain::CreateSettingsTree()
 	AddDialogToTree(IDS_SETTINGS_MOUSE, dlgMouseCmds, rect, htiHotkeys);
 
 	// create tabs settings dialog
-	shared_ptr<DlgSettingsBase>	dlgTabs(new DlgSettingsTabs(m_pSettingsRoot, dynamic_cast<DlgSettingsConsole*>(dlgConsole.get())->m_consoleSettings));
+	std::shared_ptr<DlgSettingsBase>	dlgTabs(new DlgSettingsTabs(m_pSettingsRoot, dynamic_cast<DlgSettingsConsole*>(dlgConsole.get())->m_consoleSettings));
 	AddDialogToTree(IDS_SETTINGS_TABS, dlgTabs, rect);
 
 	m_treeCtrl.Expand(htiAppearance);

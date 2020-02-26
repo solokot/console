@@ -46,12 +46,12 @@ struct UserCredentials
 		if (!strUsername.empty())
 		{
 			size_t pos;
-			if ((pos= strUsername.find(L'\\')) != wstring::npos)
+			if ((pos= strUsername.find(L'\\')) != std::wstring::npos)
 			{
 				strDomain	= strUsername.substr(0, pos);
 				strUsername	= strUsername.substr(pos+1);
 			}
-			else if ((pos= strUsername.find(L'@')) != wstring::npos)
+			else if ((pos= strUsername.find(L'@')) != std::wstring::npos)
 			{
 				// UNC format
 				strDomain	= strUsername.substr(pos + 1);
@@ -69,13 +69,13 @@ struct UserCredentials
 		}
 	}
 
-	wstring	user;
-	wstring password;
-	bool netOnly;
-	bool runAsAdministrator;
-	wstring strUsername;
-	wstring strDomain;
-	wstring strAccountName;
+	std::wstring	user;
+	std::wstring	password;
+	bool			netOnly;
+	bool			runAsAdministrator;
+	std::wstring	strUsername;
+	std::wstring	strDomain;
+	std::wstring	strAccountName;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ class ConsoleHandler
 		void StartShellProcess
 		(
 			const ConsoleOptions& consoleOptions,
-			const wstring& strShell,
+			const std::wstring& strShell,
 			const UserCredentials& userCredentials,
 			const std::vector<std::shared_ptr<VarEnv>>& extraEnv,
 			DWORD dwStartupRows,
@@ -132,8 +132,8 @@ class ConsoleHandler
 		void StartShellProcessAsAdministrator
 		(
 			const ConsoleOptions& consoleOptions,
-			const wstring& strSyncName,
-			const wstring& strShell,
+			const std::wstring& strSyncName,
+			const std::wstring& strShell,
 			const std::vector<std::shared_ptr<VarEnv>>& extraEnv
 		);
 
@@ -186,7 +186,7 @@ class ConsoleHandler
 
 	private:
 
-		bool CreateSharedObjects(DWORD dwConsoleProcessId, const wstring& strUser);
+		bool CreateSharedObjects(DWORD dwConsoleProcessId, const std::wstring& strUser);
 		void CreateWatchdog();
 
 		void InjectHookDLL(PROCESS_INFORMATION& pi);
@@ -195,7 +195,7 @@ class ConsoleHandler
 		void CreateShellProcess
 		(
 			const ConsoleOptions& consoleOptions,
-			const wstring& strShell,
+			const std::wstring& strShell,
 			const UserCredentials& userCredentials,
 			const std::vector<std::shared_ptr<VarEnv>>& extraEnv,
 			PROCESS_INFORMATION& pi
@@ -203,12 +203,12 @@ class ConsoleHandler
 
 		void RunAsAdministrator
 		(
-			const wstring& strCommandLineParams
+			const std::wstring& strCommandLineParams
 		);
 
 		void RunAsUser
 		(
-			const wstring& strCommandLineParams,
+			const std::wstring& strCommandLineParams,
 			const UserCredentials& userCredentials
 		);
 

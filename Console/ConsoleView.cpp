@@ -142,7 +142,7 @@ LRESULT ConsoleView::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, B
 			consoleOptions.strInitialDir = m_consoleOptions.strWorkingDir;
 		}
 
-		wstring	strShell(m_consoleSettings.strShell);
+		std::wstring strShell(m_consoleSettings.strShell);
 
 		if (m_tabDataShell->strShell.length() > 0)
 		{
@@ -1478,7 +1478,7 @@ bool ConsoleView::RecreateFont(DWORD dwNewFontSize, bool boolZooming, DWORD dwSc
 
 	if (!CreateFont(g_settingsHandler->GetAppearanceSettings().fontSettings.strName))
 	{
-		CreateFont(wstring(L"Courier New"));
+		CreateFont(std::wstring(L"Courier New"));
 	}
 
 	return true;
@@ -1789,7 +1789,7 @@ void ConsoleView::PasteSelection()
 
 void ConsoleView::DumpBuffer()
 {
-	wofstream of;
+	std::wofstream of;
 	of.open(Helpers::ExpandEnvironmentStrings(_T("%temp%\\console.dump")).c_str());
 	DWORD       dwOffset = 0;
 	MutexLock	bufferLock(m_consoleHandler.m_bufferMutex);
@@ -1802,7 +1802,7 @@ void ConsoleView::DumpBuffer()
 			++dwOffset;
 		}
 
-		of << endl;
+		of << std::endl;
 	}
 
 	of.close();
@@ -2028,7 +2028,7 @@ void ConsoleView::CreateOffscreenBitmap(CDC& cdc, const CRect& rect, CBitmap& bi
 
 //////////////////////////////////////////////////////////////////////////////
 
-bool ConsoleView::CreateFont(const wstring& strFontName)
+bool ConsoleView::CreateFont(const std::wstring& strFontName)
 {
 	for( CFont& font : m_fontText )
 		if( !font.IsNull() ) return true;
@@ -2981,7 +2981,7 @@ void ConsoleView::RowTextOut(CDC& dc, DWORD dwRow)
   dwX      = m_nVInsideBorder;
   dwOffset = m_dwScreenColumns * dwRow;
 
-  wstring      strText(L"");
+  std::wstring strText(L"");
   COLORREF     colorFG      = 0;
   DWORD        dwFGWidth    = 0;
   DWORD        dwCharIdx    = 0;

@@ -138,7 +138,7 @@ DWORD WallPaperThread::Process(HANDLE hStopSignal)
   if( regkeyChangeNotification.get() == nullptr )
     Win32Exception::ThrowFromLastError("CreateEvent");
 
-  unique_ptr<void, FindCloseChangeNotificationHelper> folderChangeNotification(INVALID_HANDLE_VALUE);
+  std::unique_ptr<void, FindCloseChangeNotificationHelper> folderChangeNotification(INVALID_HANDLE_VALUE);
 
   wchar_t   szWallpaper[_MAX_PATH] = L"";
   wchar_t   szWallpaperStyle  [16] = L"";

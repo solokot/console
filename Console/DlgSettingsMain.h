@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-typedef map<HTREEITEM, std::shared_ptr<DlgSettingsBase> >	SettingsDlgsMap;
+typedef std::map<HTREEITEM, std::shared_ptr<DlgSettingsBase> >	SettingsDlgsMap;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -46,7 +46,7 @@ class DlgSettingsMain
 
 	private:
 
-		wstring						m_strSettingsFileName;
+		std::wstring				m_strSettingsFileName;
 
 		CTreeViewCtrl				m_treeCtrl;
 		CButton						m_checkUserDataDir;

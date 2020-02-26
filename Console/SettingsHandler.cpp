@@ -62,8 +62,8 @@ bool ConsoleSettings::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 	CComPtr<IXMLDOMElement> pConsoleElement;
 	if (SUCCEEDED(XmlHelper::GetDomElement(pSettingsRoot, CComBSTR(L"console"), pConsoleElement)))
 	{
-		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"shell"), strShell, wstring(L""));
-		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"init_dir"), strInitialDir, wstring(L""));
+		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"shell"), strShell, std::wstring(L""));
+		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"init_dir"), strInitialDir, std::wstring(L""));
 		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"refresh"), dwRefreshInterval, 100);
 		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"change_refresh"), dwChangeRefreshInterval, 10);
 		XmlHelper::GetAttribute(pConsoleElement, CComBSTR(L"rows"), dwRows, 25);
@@ -110,7 +110,7 @@ bool ConsoleSettings::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 
 				DWORD dwImagePosition = 0;
 
-				XmlHelper::GetAttribute(pImageElement, CComBSTR(L"file"),     imageData.strFilename, wstring(L""));
+				XmlHelper::GetAttribute(pImageElement, CComBSTR(L"file"),     imageData.strFilename, std::wstring(L""));
 				XmlHelper::GetAttribute(pImageElement, CComBSTR(L"relative"), imageData.bRelative,   false);
 				XmlHelper::GetAttribute(pImageElement, CComBSTR(L"extend"),   imageData.bExtend,     false);
 				XmlHelper::GetAttribute(pImageElement, CComBSTR(L"position"), dwImagePosition,       0);
@@ -171,7 +171,7 @@ bool ConsoleSettings::Save(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 	}
 	else
 	{
-		XmlHelper::SetAttribute(pImageElement, CComBSTR(L"file"), wstring(L""));
+		XmlHelper::SetAttribute(pImageElement, CComBSTR(L"file"), std::wstring(L""));
 	}
 
 	if( backgroundImageType == bktypeImage || backgroundImageType == bktypeBing )
@@ -268,7 +268,7 @@ bool FontSettings::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 	{
 		int nFontSmoothing;
 
-		XmlHelper::GetAttribute(pFontElement, CComBSTR(L"name"), strName, wstring(L"Courier New"));
+		XmlHelper::GetAttribute(pFontElement, CComBSTR(L"name"), strName, std::wstring(L"Courier New"));
 		XmlHelper::GetAttribute(pFontElement, CComBSTR(L"size"), dwSize, 10);
 		XmlHelper::GetAttribute(pFontElement, CComBSTR(L"extra_width"), dwExtraWidth, 0);
 		XmlHelper::GetAttribute(pFontElement, CComBSTR(L"bold"), bBold, false);
@@ -379,10 +379,10 @@ bool WindowSettings::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 
 	if( SUCCEEDED(XmlHelper::GetDomElement(pSettingsRoot, CComBSTR(L"appearance/window"), pWindowElement)) )
 	{
-		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"title"), strTitle, wstring(L"ConsoleZ"));
-		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"icon"), strIcon, wstring(L""));
-		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"main_title_format"), strMainTitleFormat, wstring(L""));
-		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"tab_title_format"), strTabTitleFormat, wstring(L""));
+		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"title"), strTitle, std::wstring(L"ConsoleZ"));
+		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"icon"), strIcon, std::wstring(L""));
+		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"main_title_format"), strMainTitleFormat, std::wstring(L""));
+		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"tab_title_format"), strTabTitleFormat, std::wstring(L""));
 		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"use_tab_icon"), bUseTabIcon, true);
 		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"use_tab_title"), bUseTabTitles, true);
 		XmlHelper::GetAttribute(pWindowElement, CComBSTR(L"trim_tab_titles"), dwTrimTabTitles, 20);
@@ -2132,14 +2132,14 @@ bool HotKeys::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 			if( FAILED(pHotKeyNodes->get_item(i, &pHotKeyNode)) ) return false;
 			if( FAILED(pHotKeyNode.QueryInterface(&pHotKeyElement)) ) return false;
 
-			wstring strCommand(L"");
+			std::wstring strCommand(L"");
 			bool bShift;
 			bool bCtrl;
 			bool bAlt;
 			bool bExtended;
 			DWORD dwKeyCode;
 
-			XmlHelper::GetAttribute(pHotKeyElement, CComBSTR(L"command"), strCommand, wstring(L""));
+			XmlHelper::GetAttribute(pHotKeyElement, CComBSTR(L"command"), strCommand, std::wstring(L""));
 
 			CommandNameIndex::iterator it = commands.get<command>().find(strCommand);
 			if( it == commands.get<command>().end() ) continue;
@@ -2326,7 +2326,7 @@ bool MouseSettings::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 			if( FAILED(pActionNodes->get_item(i, &pActionNode)) ) return false;
 			if( FAILED(pActionNode.QueryInterface(&pActionElement)) ) return false;
 
-			wstring strName;
+			std::wstring strName;
 			DWORD dwButton;
 			bool bUseCtrl;
 			bool bUseShift;
@@ -2525,7 +2525,7 @@ bool TabSettings::Load(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 
 					if( tabData->backgroundImageType == bktypeImage )
 					{
-						XmlHelper::GetAttribute(pImageElement, CComBSTR(L"file"), tabData->imageData.strFilename, wstring(L""));
+						XmlHelper::GetAttribute(pImageElement, CComBSTR(L"file"), tabData->imageData.strFilename, std::wstring(L""));
 					}
 
 					if( tabData->backgroundImageType == bktypeImage || tabData->backgroundImageType == bktypeBing )
@@ -2656,7 +2656,7 @@ bool TabSettings::Save(const CComPtr<IXMLDOMElement>& pSettingsRoot)
 			}
 			else
 			{
-				XmlHelper::SetAttribute(pNewImageElement, CComBSTR(L"file"), wstring(L""));
+				XmlHelper::SetAttribute(pNewImageElement, CComBSTR(L"file"), std::wstring(L""));
 			}
 
 			if( (*itTab)->backgroundImageType == bktypeImage || (*itTab)->backgroundImageType == bktypeBing )
@@ -2793,14 +2793,14 @@ SettingsHandler::~SettingsHandler()
 
 //////////////////////////////////////////////////////////////////////////////
 
-bool SettingsHandler::LoadSettings(const wstring& strSettingsFileName)
+bool SettingsHandler::LoadSettings(const std::wstring& strSettingsFileName)
 {
 	HRESULT hr = S_OK;
 
 	std::wstring strParseError;
 	size_t pos = strSettingsFileName.rfind(L'\\');
 
-	if (pos == wstring::npos)
+	if (pos == std::wstring::npos)
 	{
 		// no path, first try with user's APPDATA dir
 
@@ -2880,7 +2880,7 @@ bool SettingsHandler::LoadSettings(const wstring& strSettingsFileName)
 		::ZeroMemory(wszAppData, sizeof(wszAppData));
 		::GetEnvironmentVariable(L"APPDATA", wszAppData, _countof(wszAppData));
 
-		if (equals(m_strSettingsPath, wstring(wszAppData) + wstring(L"\\Console\\"), is_iequal()))
+		if (equals(m_strSettingsPath, std::wstring(wszAppData) + std::wstring(L"\\Console\\"), is_iequal()))
 		{
 			m_settingsDirType = dirTypeUser;
 		}

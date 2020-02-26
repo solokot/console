@@ -36,7 +36,7 @@ LRESULT PageSettingsTabsEnv::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPAR
 
 //////////////////////////////////////////////////////////////////////////////
 
-void PageSettingsTabsEnv::Load(shared_ptr<TabData>& tabData)
+void PageSettingsTabsEnv::Load(std::shared_ptr<TabData>& tabData)
 {
 	m_tabData = tabData;
 

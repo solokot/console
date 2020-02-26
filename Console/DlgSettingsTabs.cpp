@@ -150,9 +150,9 @@ LRESULT DlgSettingsTabs::OnTabTitleChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPA
 
 LRESULT DlgSettingsTabs::OnTabIconChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-  bool    bUseDefaultIcon = m_page1.UseDefaultIcon() ? true : false;
-  wstring strIcon         = m_page1.GetTabIcon();
-  wstring strShell        = m_page1.GetTabShell();
+  bool         bUseDefaultIcon = m_page1.UseDefaultIcon() ? true : false;
+  std::wstring strIcon         = m_page1.GetTabIcon();
+  std::wstring strShell        = m_page1.GetTabShell();
 
 	CIcon tabSmallIcon(Helpers::LoadTabIcon(
 		false,

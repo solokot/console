@@ -821,9 +821,9 @@ public:
   {
     switch(copyNewlineChar)
     {
-      case newlineCRLF: strRow += wstring(L"\r\n"); break;
-      case newlineLF:   strRow += wstring(L"\n");   break;
-      default:          strRow += wstring(L"\r\n"); break;
+      case newlineCRLF: strRow += std::wstring(L"\r\n"); break;
+      case newlineLF:   strRow += std::wstring(L"\n");   break;
+      default:          strRow += std::wstring(L"\r\n"); break;
     }
   }
   virtual void Publish(ClipboardHelper& clipboard)
@@ -842,8 +842,8 @@ public:
   }
 
 private:
-  wstring strText;
-  wstring strRow;
+  std::wstring strText;
+  std::wstring strRow;
 };
 
 class ClipboardDataRtf : public ClipboardData
@@ -987,9 +987,9 @@ public:
   }
 
 private:
-  string strRtf;
-  string strRowRtf;
-  string strTrimRowRtf;
+  std::string strRtf;
+  std::string strRowRtf;
+  std::string strTrimRowRtf;
   size_t sizeRtfLen;
   size_t sizeRowLen;
   WORD   wLastCharForegroundAttributes;

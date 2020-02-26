@@ -35,12 +35,12 @@ class SharedMemory
 	public:
 
 		SharedMemory();
-		SharedMemory(const wstring& strName, DWORD dwSize, SyncObjectTypes syncObjects, bool bCreate = true);
+		SharedMemory(const std::wstring& strName, DWORD dwSize, SyncObjectTypes syncObjects, bool bCreate = true);
 
 		~SharedMemory();
 
-		void Create(const wstring& strName, DWORD dwSize/* = 1*/, SyncObjectTypes syncObjects, const wstring& strUser);
-		void Open(const wstring& strName, SyncObjectTypes syncObjects/* = syncObjNone*/);
+		void Create(const std::wstring& strName, DWORD dwSize/* = 1*/, SyncObjectTypes syncObjects, const std::wstring& strUser);
+		void Open(const std::wstring& strName, SyncObjectTypes syncObjects/* = syncObjNone*/);
 
 		inline void Lock();
 		inline void Release();
@@ -58,11 +58,11 @@ class SharedMemory
 
 	private:
 
-		void CreateSyncObjects(const std::shared_ptr<SECURITY_ATTRIBUTES>& sa, SyncObjectTypes syncObjects, const wstring& strName);
+		void CreateSyncObjects(const std::shared_ptr<SECURITY_ATTRIBUTES>& sa, SyncObjectTypes syncObjects, const std::wstring& strName);
 
 	private:
 
-		wstring				m_strName;
+		std::wstring		m_strName;
 		DWORD				m_dwSize;
 
 		std::shared_ptr<void>	m_hSharedMem;
@@ -121,7 +121,7 @@ SharedMemory<T>::SharedMemory()
 
 
 template<typename T>
-SharedMemory<T>::SharedMemory(const wstring& strName, DWORD dwSize, SyncObjectTypes syncObjects, bool bCreate)
+SharedMemory<T>::SharedMemory(const std::wstring& strName, DWORD dwSize, SyncObjectTypes syncObjects, bool bCreate)
 : m_strName(strName)
 , m_dwSize(dwSize)
 , m_hSharedMem()
@@ -157,7 +157,7 @@ SharedMemory<T>::~SharedMemory()
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void SharedMemory<T>::Create(const wstring& strName, DWORD dwSize, SyncObjectTypes syncObjects, const wstring& strUser)
+void SharedMemory<T>::Create(const std::wstring& strName, DWORD dwSize, SyncObjectTypes syncObjects, const std::wstring& strUser)
 {
 	m_strName	= strName;
 	m_dwSize	= dwSize;
@@ -278,7 +278,7 @@ void SharedMemory<T>::Create(const wstring& strName, DWORD dwSize, SyncObjectTyp
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void SharedMemory<T>::Open(const wstring& strName, SyncObjectTypes syncObjects)
+void SharedMemory<T>::Open(const std::wstring& strName, SyncObjectTypes syncObjects)
 {
 	m_strName	= strName;
 
@@ -462,12 +462,12 @@ SharedMemory<T>& SharedMemory<T>::operator=(const T& val)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void SharedMemory<T>::CreateSyncObjects(const std::shared_ptr<SECURITY_ATTRIBUTES>& sa, SyncObjectTypes syncObjects, const wstring& strName)
+void SharedMemory<T>::CreateSyncObjects(const std::shared_ptr<SECURITY_ATTRIBUTES>& sa, SyncObjectTypes syncObjects, const std::wstring& strName)
 {
 	if (syncObjects >= syncObjRequest)
 	{
 		m_hSharedMutex = std::shared_ptr<void>(
-							::CreateMutex(sa.get(), FALSE, (wstring(L"") + strName + wstring(L"_mutex")).c_str()),
+							::CreateMutex(sa.get(), FALSE, (std::wstring(L"") + strName + std::wstring(L"_mutex")).c_str()),
 							::CloseHandle);
 
 		if( !m_hSharedMutex ) Win32Exception::ThrowFromLastError("CreateMutex");
@@ -475,7 +475,7 @@ void SharedMemory<T>::CreateSyncObjects(const std::shared_ptr<SECURITY_ATTRIBUTE
 		SharedMemoryTrace(str(boost::wformat(L"m_hSharedMutex %1%: %2%\n") % m_strName % reinterpret_cast<DWORD_PTR>(m_hSharedMutex.get())).c_str());
 
 		m_hSharedReqEvent = std::shared_ptr<void>(
-							::CreateEvent(sa.get(), FALSE, FALSE, (wstring(L"") + strName + wstring(L"_req_event")).c_str()),
+							::CreateEvent(sa.get(), FALSE, FALSE, (std::wstring(L"") + strName + std::wstring(L"_req_event")).c_str()),
 							::CloseHandle);
 
 		if( !m_hSharedReqEvent ) Win32Exception::ThrowFromLastError("CreateEvent");
@@ -486,7 +486,7 @@ void SharedMemory<T>::CreateSyncObjects(const std::shared_ptr<SECURITY_ATTRIBUTE
 	if (syncObjects >= syncObjBoth)
 	{
 		m_hSharedRespEvent = std::shared_ptr<void>(
-							::CreateEvent(sa.get(), FALSE, FALSE, (wstring(L"") + strName + wstring(L"_resp_event")).c_str()),
+							::CreateEvent(sa.get(), FALSE, FALSE, (std::wstring(L"") + strName + std::wstring(L"_resp_event")).c_str()),
 							::CloseHandle);
 
 		if( !m_hSharedRespEvent ) Win32Exception::ThrowFromLastError("CreateEvent");

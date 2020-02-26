@@ -1025,7 +1025,7 @@ void TabView::Diagnose(HANDLE hFile)
 	for(auto console = m_views.begin(); console != m_views.end(); ++console)
 	{
 		WindowSettings& windowSettings = g_settingsHandler->GetAppearanceSettings().windowSettings;
-		wstring strViewTitle = m_mainFrame.FormatTitle(windowSettings.strTabTitleFormat, this, console->second);
+		std::wstring strViewTitle = m_mainFrame.FormatTitle(windowSettings.strTabTitleFormat, this, console->second);
 
 		std::wstring dummy =
 			(console->second == activeConsole ? std::wstring(L"  View (active): ") : std::wstring(L"  View: "))

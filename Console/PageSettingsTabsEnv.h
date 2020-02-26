@@ -31,12 +31,12 @@ class PageSettingsTabsEnv
 		LRESULT OnClickedBtnEnvDelete(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 		LRESULT OnClickedBtnEnvEdit  (WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
-		void Load(shared_ptr<TabData>& tabData);
+		void Load(std::shared_ptr<TabData>& tabData);
 		void Save();
 
 	private:
 
-		shared_ptr<TabData> m_tabData;
+		std::shared_ptr<TabData> m_tabData;
 
 		CListViewCtrl       m_listCtrl;
 		CEdit               m_editVariable;

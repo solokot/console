@@ -217,7 +217,7 @@ struct ImageData
 	{
 	}
 
-	ImageData(const wstring& filename, bool relative, bool extend, ImagePosition position, COLORREF background, COLORREF tint, BYTE tintOpacity)
+	ImageData(const std::wstring& filename, bool relative, bool extend, ImagePosition position, COLORREF background, COLORREF tint, BYTE tintOpacity)
 	: strFilename(filename)
 	, bRelative(relative)
 	, bExtend(extend)
@@ -271,7 +271,7 @@ struct ImageData
 		return true;
 	}
 
-	wstring				strFilename;
+	std::wstring		strFilename;
 
 	bool				bRelative;
 	bool				bExtend;
@@ -339,7 +339,7 @@ struct MonitorEnumData
 
 //////////////////////////////////////////////////////////////////////////////
 
-typedef vector<std::shared_ptr<BackgroundImage> >	Images;
+typedef std::vector<std::shared_ptr<BackgroundImage> >	Images;
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////

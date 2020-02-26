@@ -59,7 +59,7 @@ HRESULT XmlHelper::OpenXmlDocument(const std::wstring& strFilename, CComPtr<IXML
 	return hr;
 }
 
-HRESULT XmlHelper::OpenXmlDocumentFromResource(const wstring& strFilename, CComPtr<IXMLDOMDocument>& pXmlDocument, CComPtr<IXMLDOMElement>& pRootElement)
+HRESULT XmlHelper::OpenXmlDocumentFromResource(const std::wstring& strFilename, CComPtr<IXMLDOMDocument>& pXmlDocument, CComPtr<IXMLDOMElement>& pRootElement)
 {
 	VARIANT_BOOL bLoadSuccess = 0; // FALSE
 
@@ -361,7 +361,7 @@ void XmlHelper::GetAttribute(const CComPtr<IXMLDOMElement>& pElement, const CCom
 
 //////////////////////////////////////////////////////////////////////////////
 
-void XmlHelper::GetAttribute(const CComPtr<IXMLDOMElement>& pElement, const CComBSTR& bstrName, wstring& strValue, const wstring& strDefaultValue)
+void XmlHelper::GetAttribute(const CComPtr<IXMLDOMElement>& pElement, const CComBSTR& bstrName, std::wstring& strValue, const std::wstring& strDefaultValue)
 {
 	CComVariant	varValue;
 
@@ -487,7 +487,7 @@ void XmlHelper::SetAttribute(const CComPtr<IXMLDOMElement>& pElement, const CCom
 
 //////////////////////////////////////////////////////////////////////////////
 
-void XmlHelper::SetAttribute(const CComPtr<IXMLDOMElement>& pElement, const CComBSTR& bstrName, const wstring& strValue)
+void XmlHelper::SetAttribute(const CComPtr<IXMLDOMElement>& pElement, const CComBSTR& bstrName, const std::wstring& strValue)
 {
 	CComVariant	varValue(strValue.c_str());
 

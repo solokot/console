@@ -13,13 +13,13 @@ extern int g_nIconSize;
 
 //////////////////////////////////////////////////////////////////////////////
 
-wstring Helpers::GetModulePath(HINSTANCE hInstance, bool boolTrailingPathDelimiter)
+std::wstring Helpers::GetModulePath(HINSTANCE hInstance, bool boolTrailingPathDelimiter)
 {
 	wchar_t szModulePath[MAX_PATH] = L"";
 
 	::GetModuleFileName(hInstance, szModulePath, MAX_PATH);
 
-	wstring strPath(szModulePath);
+	std::wstring strPath(szModulePath);
 
 	return strPath.substr(0, strPath.rfind(L'\\') + (boolTrailingPathDelimiter? 1 : 0));
 }
@@ -29,13 +29,13 @@ wstring Helpers::GetModulePath(HINSTANCE hInstance, bool boolTrailingPathDelimit
 
 //////////////////////////////////////////////////////////////////////////////
 
-wstring Helpers::GetModuleFileName(HINSTANCE hInstance)
+std::wstring Helpers::GetModuleFileName(HINSTANCE hInstance)
 {
 	wchar_t szModulePath[MAX_PATH] = L"";
 
 	::GetModuleFileName(hInstance, szModulePath, MAX_PATH);
 
-	wstring strPath(szModulePath);
+	std::wstring strPath(szModulePath);
 
 	return strPath;
 }
@@ -45,14 +45,14 @@ wstring Helpers::GetModuleFileName(HINSTANCE hInstance)
 
 //////////////////////////////////////////////////////////////////////////////
 
-wstring Helpers::GetCurrentDirectory(void)
+std::wstring Helpers::GetCurrentDirectory(void)
 {
 	wchar_t szCD[MAX_PATH] = L"";
 
 	if( ::GetCurrentDirectory(MAX_PATH, szCD) == 0 )
-		return wstring();
+		return std::wstring();
 	else
-		return wstring(szCD);
+		return std::wstring(szCD);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -60,9 +60,9 @@ wstring Helpers::GetCurrentDirectory(void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-wstring Helpers::EscapeCommandLineArg(const wstring& str)
+std::wstring Helpers::EscapeCommandLineArg(const std::wstring& str)
 {
-	wstring result(L"\"");
+	std::wstring result(L"\"");
 	result += str;
 	if( str.back() == L'\\' )
 		result += L"\\";
@@ -76,13 +76,13 @@ wstring Helpers::EscapeCommandLineArg(const wstring& str)
 
 //////////////////////////////////////////////////////////////////////////////
 
-wstring Helpers::ExpandEnvironmentStrings(const wstring& str)
+std::wstring Helpers::ExpandEnvironmentStrings(const std::wstring& str)
 {
 	wchar_t szExpanded[0x8000] = L"";
 
 	::ExpandEnvironmentStrings(str.c_str(), szExpanded, ARRAYSIZE(szExpanded));
 
-	return wstring(szExpanded);
+	return std::wstring(szExpanded);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -90,13 +90,13 @@ wstring Helpers::ExpandEnvironmentStrings(const wstring& str)
 
 //////////////////////////////////////////////////////////////////////////////
 
-wstring Helpers::ExpandEnvironmentStringsForUser(HANDLE userToken, const wstring& str)
+std::wstring Helpers::ExpandEnvironmentStringsForUser(HANDLE userToken, const std::wstring& str)
 {
 	wchar_t szExpanded[0x8000] = L"";
 
 	::ExpandEnvironmentStringsForUser(userToken, str.c_str(), szExpanded, ARRAYSIZE(szExpanded));
 
-	return wstring(szExpanded);
+	return std::wstring(szExpanded);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,8 @@ void Helpers::LoadCombo(CComboBox& cb, UINT uID)
 {
 	std::wstring combo = Helpers::LoadStringW(uID);
 	std::vector<std::wstring> tok;
-	boost::algorithm::split(tok, combo, /*boost::is_any_of(L";")*/std::bind2nd(std::equal_to<wchar_t>(), L';'));
+	boost::algorithm::split(tok, combo, boost::is_any_of(L";"));
+	//*/ std::bind2nd(std::equal_to<wchar_t>(), L';'));
 
 	for(auto tok_iter = tok.begin(); tok_iter != tok.end(); ++tok_iter)
 	{
@@ -439,7 +440,7 @@ void Helpers::LoadCombo(CComboBox& cb, UINT uID)
 
 //////////////////////////////////////////////////////////////////////////////
 
-HICON Helpers::LoadIcon(bool bBigIcon, const wstring& strIcon)
+HICON Helpers::LoadIcon(bool bBigIcon, const std::wstring& strIcon)
 {
 	int index = 0;
 
@@ -447,7 +448,7 @@ HICON Helpers::LoadIcon(bool bBigIcon, const wstring& strIcon)
 	bool ok = false;
 
 	size_t pos = strIcon.find_last_of(L',');
-	if( pos != wstring::npos )
+	if( pos != std::wstring::npos )
 	{
 		bool negative = false;
 		size_t i = pos + 1;
@@ -473,7 +474,7 @@ HICON Helpers::LoadIcon(bool bBigIcon, const wstring& strIcon)
 			index = -index;
 	}
 
-	wstring strIconPath = ok ? strIcon.substr(0, pos) : strIcon;
+	std::wstring strIconPath = ok ? strIcon.substr(0, pos) : strIcon;
 
 	HICON hIcon = nullptr;
 
@@ -512,7 +513,7 @@ HICON Helpers::LoadIcon(bool bBigIcon, const wstring& strIcon)
 	return hIcon;
 }
 
-HICON Helpers::LoadTabIcon(bool bBigIcon, bool bUseDefaultIcon, const wstring& strIcon, const wstring& strShell)
+HICON Helpers::LoadTabIcon(bool bBigIcon, bool bUseDefaultIcon, const std::wstring& strIcon, const std::wstring& strShell)
 {
 	if( bUseDefaultIcon )
 	{

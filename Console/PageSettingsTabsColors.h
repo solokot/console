@@ -58,7 +58,7 @@ class PageSettingsTabsColors
 		LRESULT OnClickedBtnSetAsDefaultColors(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 		LRESULT OnClickedBtnSetAsDefaultCursor(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
-		void Load(shared_ptr<TabData>& tabData);
+		void Load(std::shared_ptr<TabData>& tabData);
 		void Save();
 
 	private:
@@ -73,7 +73,7 @@ class PageSettingsTabsColors
 	private:
 
 		ConsoleSettings	&m_consoleSettings;
-		shared_ptr<TabData>	m_tabData;
+		std::shared_ptr<TabData> m_tabData;
 		std::shared_ptr<Cursor>	m_cursor;
 
 		CStatic			m_staticCursorAnim;

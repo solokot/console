@@ -326,10 +326,10 @@ bool ImageHandler::GetDesktopImageData(ImageData& imageData)
 	}
 	strBackground.ReleaseBuffer();
 
-	wstringstream	streamBk(wstring(strBackground.operator LPCTSTR()));
-	DWORD			r = 0;
-	DWORD			g = 0;
-	DWORD			b = 0;
+	std::wstringstream streamBk(std::wstring(strBackground.operator LPCTSTR()));
+	DWORD r = 0;
+	DWORD g = 0;
+	DWORD b = 0;
 
 	streamBk >> r;
 	streamBk >> g;
@@ -1081,7 +1081,7 @@ BOOL CALLBACK ImageHandler::MonitorEnumProcWin8(HMONITOR hMonitor, HDC /*hdcMoni
     if( rc != ERROR_SUCCESS )
       Win32Exception::Throw("RegOpenKeyEx", rc);
 
-    unique_ptr<HKEY__, RegCloseKeyHelper>hkeyPtr(hkey);
+    std::unique_ptr<HKEY__, RegCloseKeyHelper>hkeyPtr(hkey);
 
     rc = ::RegQueryValueEx(
       hkeyPtr.get(),

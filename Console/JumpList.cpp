@@ -76,7 +76,7 @@ static HRESULT SetIcon(IShellLink *psl, std::shared_ptr<TabData> tab)
   {
     if ( !tab->strShell.empty() )
     {
-      wstring strCommandLine = Helpers::ExpandEnvironmentStrings(tab->strShell);
+      std::wstring strCommandLine = Helpers::ExpandEnvironmentStrings(tab->strShell);
       int argc = 0;
       std::unique_ptr<LPWSTR[], LocalFreeHelper> argv(::CommandLineToArgvW(strCommandLine.c_str(), &argc));
 
@@ -125,7 +125,7 @@ void JumpList::CreateList(TabDataVector& tabDataVector)
   for (TabDataVector::iterator it = tabDataVector.begin(); it != tabDataVector.end(); ++it)
   {
     CComPtr<IShellLink> psl;
-    wstring quotedName(L"-t ");
+    std::wstring quotedName(L"-t ");
     quotedName.append(Helpers::EscapeCommandLineArg((*it)->strTitle));
     quotedName.append(L" -c ");
     quotedName.append(Helpers::EscapeCommandLineArg(g_settingsHandler->GetSettingsFileName()));

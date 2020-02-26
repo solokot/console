@@ -251,7 +251,7 @@ int Run(LPTSTR lpstrCmdLine = NULL, int nCmdShow = SW_SHOWDEFAULT)
 						consoleOptions.strInitialDir = commandLineOptions.startupDirs[0];
 					}
 
-					wstring	strShell(g_settingsHandler->GetConsoleSettings().strShell);
+					std::wstring strShell(g_settingsHandler->GetConsoleSettings().strShell);
 
 					if (tabData->get()->strShell.length() > 0)
 					{
@@ -407,7 +407,7 @@ HMODULE LoadLocalizedResourcesDll(const wchar_t * szLang)
 {
 	HMODULE hResources = nullptr;
 
-	wstring dll (L"console_");
+	std::wstring dll (L"console_");
 	dll += szLang;
 	dll += L".dll";
 
