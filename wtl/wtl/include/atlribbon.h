@@ -155,8 +155,8 @@ public:
 	bool UIPersistElement(UINT nID, bool bPersist = true)
 	{
 		return bPersist ?
-			UIAddElement<UPDUI_PERSIST>(nID) :
-			UIRemoveElement<UPDUI_PERSIST>(nID);
+			this->UIAddElement<UPDUI_PERSIST>(nID) :
+			this->UIRemoveElement<UPDUI_PERSIST>(nID);
 	}
 
 // methods for Ribbon elements
@@ -186,7 +186,7 @@ public:
 		// replace 'tab' by 'space' for RibbonUI elements
 		if (sUI && pT->IsRibbonUI() && IsRibbonID(nID) && wcschr(sUI, L'\t'))
 		{
-			static WCHAR sText[RIBBONUI_MAX_TEXT] = { 0 };
+			static WCHAR sText[RIBBONUI_MAX_TEXT] = {};
 			wcscpy_s(sText, sUI);
 			WCHAR* pch = wcschr(sText, L'\t');
 			if (pch != NULL)
@@ -373,13 +373,14 @@ struct CharFormat : CHARFORMAT2
 	// Copy constructor
 	CharFormat(const CharFormat& cf)
 	{
-		::CopyMemory(this, &cf, sizeof(CHARFORMAT2));
+		this->CharFormat::CharFormat();
+		::CopyMemory(this, &cf, sizeof(CharFormat));
 	}
 
 	// Assign operator
 	CharFormat& operator =(const CharFormat& cf)
 	{
-		::CopyMemory(this, &cf, sizeof(CHARFORMAT2));
+		::CopyMemory(this, &cf, sizeof(CharFormat));
 		return (*this);
 	}
 
@@ -465,7 +466,7 @@ private:
 	{
 		if (SUCCEEDED(pStore->GetValue(UI_PKEY_FontProperties_Size, &propvar)))
 		{
-			DECIMAL decSize = { 0 };
+			DECIMAL decSize = {};
 			UIPropertyToDecimal(UI_PKEY_FontProperties_Size, propvar, &decSize);
 			DOUBLE dSize = 0;
 			VarR8FromDec(&decSize, &dSize);
@@ -715,6 +716,9 @@ public:
 	CtrlImpl() : m_pWndRibbon(T::pWndRibbon)
 	{ }
 
+	virtual ~CtrlImpl()
+	{ }
+
 	WndRibbon& GetWndRibbon()
 	{
 		return *m_pWndRibbon;
@@ -807,7 +811,7 @@ public:
 		m_hbm[k_(key) - k_LargeImage].Attach(hbm);
 
 		return bUpdate ?
-			GetWndRibbon().InvalidateProperty(GetID(), key) :
+			this->GetWndRibbon().InvalidateProperty(this->GetID(), key) :
 			S_OK;
 	}
 
@@ -900,6 +904,7 @@ class CollectionImplBase
 public:
 	CollectionImplBase()
 	{
+		memset(&m_apItems, 0, sizeof(m_apItems));
 		for (int i = 0; i < t_size; i++)
 			m_apItems[i] = new ItemProperty<TCollection>(i, static_cast<TCollection*>(this));
 	}
@@ -980,7 +985,7 @@ public:
 		{
 			if (m_auItemCat[uItem] == UI_COLLECTION_INVALIDINDEX)
 			{
-				TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+				typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 				m_auItemCat[uItem] = ribbon.OnRibbonQueryItemCategory(TCtrl::GetID(), uItem);
 			}
 			uCat = m_auItemCat[uItem];
@@ -998,7 +1003,7 @@ public:
 		case k_Label:
 			if (m_asCatName[uCat].IsEmpty())
 			{
-				TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+				typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 				m_asCatName[uCat] = ribbon.OnRibbonQueryCategoryText(TCtrl::GetID(), uCat);
 			}
 			hr = SetPropertyVal(key, (LPCWSTR)m_asCatName[uCat], value);
@@ -1028,7 +1033,7 @@ public:
 	                         const PROPVARIANT* ppropvarCurrentValue, PROPVARIANT* /*ppropvarNewValue*/)
 	{
 		ATLASSERT(nCmdID == TCtrl::GetID());
-		nCmdID;   // avoid level 4 warning
+		(void)nCmdID;   // avoid level 4 warning
 
 		HRESULT hr = E_NOTIMPL;
 		switch (k_(key))
@@ -1088,7 +1093,7 @@ public:
 
 		m_asText[uItem] = sText;
 
-		return bUpdate ? InvalidateItems() : S_OK;
+		return bUpdate ? this->InvalidateItems() : S_OK;
 	}
 
 	UINT GetSelected()
@@ -1102,7 +1107,7 @@ public:
 
 		m_uSelected = uItem;
 
-		TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+		typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 		return bUpdate ?
 			ribbon.SetProperty(TCtrl::GetID(), UI_PKEY_SelectedItem, uItem) : 
 			S_OK;
@@ -1117,7 +1122,7 @@ public:
 		{
 			if (m_asText[uItem].IsEmpty())
 			{
-				TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+				typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 				m_asText[uItem] = ribbon.OnRibbonQueryItemText(TCtrl::GetID(), uItem);
 			}
 			return SetPropertyVal(key, (LPCWSTR)m_asText[uItem], value);
@@ -1135,7 +1140,7 @@ public:
 
 		if (k_(key) == k_SelectedItem)
 		{
-			TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+			typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 			UINT uSel = UI_COLLECTION_INVALIDINDEX;
 			if ((m_uSelected == UI_COLLECTION_INVALIDINDEX) &&
 			    ribbon.OnRibbonQuerySelectedItem(TCtrl::GetID(), uSel))
@@ -1159,11 +1164,6 @@ class ItemCollectionImpl : public TextCollectionImpl<TCtrl, t_items, t_categorie
 public:
 	typedef thisClass ItemCollection;
 	
-	ItemCollectionImpl()
-	{
-		::ZeroMemory(m_aBitmap, sizeof(m_aBitmap));
-	}
-
 	CBitmap m_aBitmap[t_items];
 
 	// Operations
@@ -1173,7 +1173,7 @@ public:
 
 		m_aBitmap[uIndex] = hbm;
 
-		return bUpdate ? InvalidateItems() : S_OK;
+		return bUpdate ? this->InvalidateItems() : S_OK;
 	}
 
 // Implementation
@@ -1185,7 +1185,7 @@ public:
 		{
 			if (m_aBitmap[uItem].IsNull())
 			{
-				TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+				typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 				m_aBitmap[uItem] = ribbon.OnRibbonQueryItemImage(TCtrl::GetID(), uItem);
 			}
 			return m_aBitmap[uItem].IsNull() ?
@@ -1211,7 +1211,7 @@ public:
 	// Operations
 	HRESULT SetComboText(LPCWSTR sText)
 	{
-		TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+		typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 		return ribbon.IsRibbonUI() ? 
 			ribbon.SetProperty(TCtrl::GetID(), UI_PKEY_StringValue, sText) : 
 			S_OK;
@@ -1219,13 +1219,15 @@ public:
 
 	LPCWSTR GetComboText()
 	{
-		static WCHAR sCombo[RIBBONUI_MAX_TEXT] = { 0 };
-		TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+		static WCHAR sCombo[RIBBONUI_MAX_TEXT] = {};
+		typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 		PROPVARIANT var;
 		if (ribbon.IsRibbonUI())
 		{
 			HRESULT hr = ribbon.GetIUIFrameworkPtr()->GetUICommandProperty(TCtrl::GetID(), UI_PKEY_StringValue, &var);
+			ATLASSERT(SUCCEEDED(hr));
 			hr = PropVariantToString(var, sCombo, RIBBONUI_MAX_TEXT);
+			ATLASSERT(SUCCEEDED(hr));
 			return sCombo;
 		}
 		return NULL;
@@ -1258,7 +1260,7 @@ public:
 		if (uCommandID == m_auCmd[uItem])
 			return S_OK;
 
-		TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+		typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 
 		m_auCmd[uItem] = uCommandID;
 		if (uCommandID != 0)
@@ -1280,7 +1282,7 @@ public:
  	HRESULT DoGetItem(UINT uItem, REFPROPERTYKEY key, PROPVARIANT *value)
 	{
 		ATLASSERT(uItem < t_items);
-		TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+		typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 
 		HRESULT hr = E_FAIL;
 		switch (k_(key))
@@ -1325,7 +1327,7 @@ public:
 	HRESULT OnGetItem(UINT uItem, REFPROPERTYKEY key, PROPVARIANT *value)
 	{
 		ATLASSERT(uItem < t_size);
-		TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
+		typename TCtrl::WndRibbon& ribbon = static_cast<TCtrl*>(this)->GetWndRibbon();
 
 		HRESULT hr = E_NOTIMPL;
 		switch (k_(key))
@@ -1389,7 +1391,7 @@ public:
 	                          IUISimplePropertySet* /*pCommandExecutionProperties*/)
 	{
 		ATLASSERT (nCmdID == this->GetID());
-		nCmdID; // avoid level4 warning
+		(void)nCmdID; // avoid level4 warning
 
 		if (key == NULL) // gallery button pressed
 		{
@@ -1493,7 +1495,7 @@ public:
 		m_uSelected = uItem;
 
 		return bUpdate ? 
-			GetWndRibbon().SetProperty(GetID(), UI_PKEY_SelectedItem, uItem) : 
+			this->GetWndRibbon().SetProperty(this->GetID(), UI_PKEY_SelectedItem, uItem) :
 			S_OK;
 	}
 
@@ -1536,7 +1538,7 @@ public:
 	                          IUISimplePropertySet* /*pCommandExecutionProperties*/)
 	{
 		ATLASSERT (nCmdID == this->GetID());
-		nCmdID;   // avoid level 4 warning
+		(void)nCmdID;   // avoid level 4 warning
 		
 		HRESULT hr = S_OK;
 		if (key == NULL) // gallery button pressed
@@ -1622,9 +1624,9 @@ public:
 	                          IUISimplePropertySet* /*pCommandExecutionProperties*/)
 	{
 		ATLASSERT(nCmdID == this->GetID());
-		nCmdID;   // avoid level 4 warning
+		(void)nCmdID;   // avoid level 4 warning
 		ATLASSERT(verb == UI_EXECUTIONVERB_EXECUTE);
-		verb;   // avoid level 4 warning
+		(void)verb;   // avoid level 4 warning
 		ATLASSERT((key) && (k_(*key) == k_SelectedItem));
 		ATLASSERT(ppropvarValue);
 
@@ -1659,9 +1661,9 @@ public:
 	                          IUISimplePropertySet* pCommandExecutionProperties)
 	{
 		ATLASSERT (nCmdID == this->GetID());
-		nCmdID;   // avoid level 4 warning
+		(void)nCmdID;   // avoid level 4 warning
 		ATLASSERT ((key) && (k_(*key) == k_FontProperties));
-		key;   // avoid level 4 warning
+		(void)key;   // avoid level 4 warning
 
 		HRESULT hr = E_INVALIDARG;
 		switch (verb)
@@ -1717,8 +1719,8 @@ public:
 	ColorCtrlImpl() : m_colorType(UI_SWATCHCOLORTYPE_NOCOLOR), m_color(0x800080) /*MAGENTA*/
 	{ }
 
-	COLORREF m_color;
 	UINT32 m_colorType; // value in UI_SWATCHCOLORTYPE
+	COLORREF m_color;
 	Text m_sLabels[6]; // k_MoreColorsLabel to k_ThemeColorsCategoryLabel
 	ATL::CSimpleArray<COLORREF> m_aColors[2];
 	ATL::CSimpleArray<LPCWSTR> m_aTooltips[2];
@@ -1729,20 +1731,20 @@ public:
 		if (m_colorType != UI_SWATCHCOLORTYPE_RGB)
 			SetColorType(UI_SWATCHCOLORTYPE_RGB, bUpdate);
 		m_color = color;
-		return bUpdate ? SetProperty(UI_PKEY_Color, color) : S_OK;
+		return bUpdate ? this->SetProperty(UI_PKEY_Color, color) : S_OK;
 	}
 
 	HRESULT SetColorType(UI_SWATCHCOLORTYPE type, bool bUpdate = false)
 	{
 		m_colorType = type;
-		return bUpdate ? SetProperty(UI_PKEY_ColorType, type) : S_OK;
+		return bUpdate ? this->SetProperty(UI_PKEY_ColorType, type) : S_OK;
 	}
 
 	HRESULT SetColorLabel(REFPROPERTYKEY key, LPCWSTR sLabel, bool bUpdate = false)
 	{
 		ATLASSERT((k_(key) >= k_ThemeColorsCategoryLabel) && (k_(key) <= k_MoreColorsLabel));
 		m_sLabels[k_(key) - k_ThemeColorsCategoryLabel] = sLabel;
-		return bUpdate ? SetProperty(key, sLabel) : S_OK;
+		return bUpdate ? this->SetProperty(key, sLabel) : S_OK;
 	}
 
 	HRESULT SetColorArray(REFPROPERTYKEY key, COLORREF* pColor, bool bUpdate = false)
@@ -1797,9 +1799,9 @@ public:
 	                          IUISimplePropertySet* pCommandExecutionProperties)
 	{
 		ATLASSERT (nCmdID == this->GetID());
-		nCmdID;   // avoid level 4 warning
+		(void)nCmdID;   // avoid level 4 warning
 		ATLASSERT (key && (k_(*key) == k_ColorType));
-		key;   // avoid level 4 warning
+		(void)key;   // avoid level 4 warning
 		ATLASSERT (ppropvarValue);
 
 		HRESULT hr = PropVariantToUInt32(*ppropvarValue, &m_colorType);
@@ -1957,7 +1959,7 @@ public:
 		}
 
 		return bUpdate ?
-			GetWndRibbon().InvalidateProperty(GetID(), key) :
+			this->GetWndRibbon().InvalidateProperty(this->GetID(), key) :
 			S_OK;
 	}
 
@@ -1974,11 +1976,11 @@ public:
 			{
 				DECIMAL decVal;
 				InitDecimal(val, &decVal);
-				return SetProperty(key, &decVal);
+				return this->SetProperty(key, &decVal);
 			}
 			else
 			{
-				return GetWndRibbon().InvalidateProperty(GetID(), key);
+				return this->GetWndRibbon().InvalidateProperty(this->GetID(), key);
 			}
 		}
 		else
@@ -2029,16 +2031,18 @@ public:
 	                          IUISimplePropertySet* /*pCommandExecutionProperties*/)
 	{
 		ATLASSERT (nCmdID == this->GetID());
-		nCmdID;   // avoid level 4 warning
+		(void)nCmdID;   // avoid level 4 warning
 		ATLASSERT (key && (k_(*key) == k_DecimalValue));
-		key;   // avoid level 4 warning
+		(void)key;   // avoid level 4 warning
 		ATLASSERT (verb == UI_EXECUTIONVERB_EXECUTE);
-		verb;   // avoid level 4 warning
+		(void)verb;   // avoid level 4 warning
 
 		DECIMAL decVal;
 
 		HRESULT hr = UIPropertyToDecimal(UI_PKEY_DecimalValue, *ppropvarValue, &decVal);
+		ATLASSERT(SUCCEEDED(hr));
 		hr = InitVal(m_Values[0], &decVal);
+		ATLASSERT(SUCCEEDED(hr));
 
 		this->GetWndRibbon().OnRibbonSpinnerCtrlExecute(this->GetID(), &m_Values[0]);
 
@@ -2061,12 +2065,10 @@ public:
 			hr = OnGetValue(key, ppropvarNewValue);
 			break;
 		case k_FormatString:
-			if (m_FormatString.IsEmpty())
-				return OnGetText(key, m_FormatString, ppropvarNewValue);
+			hr = OnGetText(key, m_FormatString, ppropvarNewValue);
 			break;
 		case k_RepresentativeString:
-			if (m_RepresentativeString.IsEmpty())
-				return OnGetText(key, m_RepresentativeString, ppropvarNewValue);
+			hr = OnGetText(key, m_RepresentativeString, ppropvarNewValue);
 			break;
 		default:
 			hr = CtrlImpl<T, t_ID>::DoUpdateProperty(nCmdID, key, ppropvarCurrentValue, ppropvarNewValue);
@@ -2131,7 +2133,7 @@ public:
 		ATLASSERT(SUCCEEDED(hr));
 	}
 
-	~CRibbonImpl()
+	virtual ~CRibbonImpl()
 	{
 		::GlobalFree(m_hgRibbonSettings);
 		m_pIUIFramework.Release();
@@ -2144,8 +2146,8 @@ public:
 	}
 
 	ATL::CComPtr<IUIFramework> m_pIUIFramework;
-	HGLOBAL m_hgRibbonSettings;
 	bool m_bRibbonUI;
+	HGLOBAL m_hgRibbonSettings;
 
 	bool IsRibbonUI()
 	{
@@ -2223,7 +2225,7 @@ public:
 		HRESULT hr = E_FAIL;
 		if (ATL::CComPtr<IUIRibbon> pIUIRibbon = GetRibbonPtr())
 		{
-			const LARGE_INTEGER li0 = { 0 };
+			const LARGE_INTEGER li0 = {};
 			pIStream->Seek(li0, STREAM_SEEK_SET, NULL);
 			hr = pIUIRibbon->SaveSettingsToStream(pIStream);
 			pIStream->Commit(STGC_DEFAULT);
@@ -2240,7 +2242,7 @@ public:
 		HRESULT hr = E_FAIL;
 		if (ATL::CComPtr<IUIRibbon> pIUIRibbon = GetRibbonPtr())
 		{
-			const LARGE_INTEGER li0 = { 0 };
+			const LARGE_INTEGER li0 = {};
 			pIStream->Seek(li0, STREAM_SEEK_SET, NULL);
 			hr = pIUIRibbon->LoadSettingsFromStream(pIStream);
 		}
@@ -2658,7 +2660,7 @@ public:
 
 	LPCTSTR DefRibbonQueryText(UINT nCmdID, REFPROPERTYKEY key)
 	{
-		static WCHAR sText[RIBBONUI_MAX_TEXT] = { 0 };
+		static WCHAR sText[RIBBONUI_MAX_TEXT] = {};
 
 		if (k_(key) == k_Label)
 			 return this->UIGetText(nCmdID);
@@ -2785,6 +2787,8 @@ public:
 			SaveRibbonSettings();
 			m_bRibbonUI = false;
 			break;
+		default:
+			break;
 		}
 
 		return S_OK;
@@ -2903,7 +2907,7 @@ public:
 		}
 
 		ATLASSERT(verb == UI_EXECUTIONVERB_EXECUTE);
-		verb;   // avoid level 4 warning
+		(void)verb;   // avoid level 4 warning
 
 		static_cast<T*>(this)->OnRibbonCommandExecute(nCmdID);
 		
@@ -3060,7 +3064,7 @@ typedef struct
 } _ribbonCtrl;
 #pragma warning(pop)
 
-}; // namespace RibbonUI
+} // namespace RibbonUI
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3171,14 +3175,14 @@ public:
 // Win7 Aero fix helpers
 	void ResetFrame()
 	{
-		const MARGINS margins = { 0 };
+		const MARGINS margins = { 0, 0, 0, 0 };
 		::DwmExtendFrameIntoClientArea(this->m_hWnd, &margins);
 	}
 
 	INT CalcWin7Fix()
 	{
 		ResetFrame();
-		RECT rc = { 0 };
+		RECT rc = {};
 		::AdjustWindowRectEx(&rc, T::GetWndStyle(0), this->GetMenu() != NULL, T::GetWndExStyle(0));
 		return -rc.top;
 	}
@@ -3198,7 +3202,7 @@ public:
 		}
 		__if_not_exists(T::m_CmdBar)
 		{
-			bUse;   // avoid level 4 warning
+			(void)bUse;   // avoid level 4 warning
 			return false;
 		}
 	}
@@ -3208,45 +3212,45 @@ public:
 		if (!RunTimeHelper::IsRibbonUIAvailable())
 			return false;
 
-		ATLASSERT(GetIUIFrameworkPtr());
+		ATLASSERT(this->GetIUIFrameworkPtr());
 
-		if (IsRibbonUI() == bShow)
+		if (this->IsRibbonUI() == bShow)
 			return bShow;
 
-		bool bVisible = (IsWindowVisible() != FALSE);
+		bool bVisible = (this->IsWindowVisible() != FALSE);
 		if(bVisible && !bShow)
-			SetRedraw(FALSE);
+			this->SetRedraw(FALSE);
 
-		if (bShow && ::IsWindow(m_hWndToolBar))
+		if (bShow && ::IsWindow(this->m_hWndToolBar))
 		{
-			::ShowWindow(m_hWndToolBar, SW_HIDE);
+			::ShowWindow(this->m_hWndToolBar, SW_HIDE);
 			UpdateLayout();
 		}
 
 		m_bWin7Fix = !bShow;
 
-		HRESULT hr = bShow ? CreateRibbon(sResName) : DestroyRibbon();
+		HRESULT hr = bShow ? this->CreateRibbon(sResName) : this->DestroyRibbon();
 
 		m_bWin7Fix = SUCCEEDED(hr) && !bShow;
 
 		if (SUCCEEDED(hr))
 		{
-			if(::IsWindow(m_hWndToolBar) && !bShow)
+			if(::IsWindow(this->m_hWndToolBar) && !bShow)
 			{
-				::ShowWindow(m_hWndToolBar, SW_SHOWNA);
+				::ShowWindow(this->m_hWndToolBar, SW_SHOWNA);
 				UpdateLayout(); 
 			}
 			else if (bShow)
 			{
-				PostMessage(WM_SIZE); 
-				SetRibbonModes(imodes);
+				this->PostMessage(WM_SIZE);
+				this->SetRibbonModes(imodes);
 			}
 		}
 
 		if(bVisible && !bShow)
 		{
-			SetRedraw(TRUE);
-			RedrawWindow(NULL, NULL, RDW_FRAME | RDW_ERASE | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+			this->SetRedraw(TRUE);
+			this->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_ERASE | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
 		}
 
 		return SUCCEEDED(hr) ? bShow : !bShow;
@@ -3330,7 +3334,7 @@ public:
 // Overrides
 	void UpdateLayout(BOOL bResizeBars = TRUE)
 	{
-		RECT rect = { 0 };
+		RECT rect = {};
 		this->GetClientRect(&rect);
 
 		if (this->IsRibbonUI() && !this->IsRibbonHidden())
@@ -3364,7 +3368,7 @@ public:
 		}
 		__if_not_exists (T::m_CmdBar)
 		{
-			nCmdID;   // avoid level 4 warning
+			(void)nCmdID;   // avoid level 4 warning
 			return NULL;
 		}
 	}

@@ -19,6 +19,8 @@
 	#error atlprint.h requires atlwin.h to be included first
 #endif
 
+#include <winspool.h>
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Classes in this file:
@@ -185,25 +187,18 @@ public:
 	bool OpenDefaultPrinter(const DEVMODE* pDevMode = NULL)
 	{
 		ClosePrinter();
-		const int cchBuff = 512;
-		TCHAR buffer[cchBuff] = { 0 };
-		::GetProfileString(_T("windows"), _T("device"), _T(",,,"), buffer, cchBuff);
-		int nLen = lstrlen(buffer);
-		if (nLen != 0)
+
+		DWORD cchBuff = 0;
+		::GetDefaultPrinter(NULL, &cchBuff);
+		TCHAR* pszBuff = new TCHAR[cchBuff];
+		BOOL bRet = ::GetDefaultPrinter(pszBuff, &cchBuff);
+		if(bRet != FALSE)
 		{
-			LPTSTR lpsz = buffer;
-			while (*lpsz)
-			{
-				if (*lpsz == _T(','))
-				{
-					*lpsz = 0;
-					break;
-				}
-				lpsz = CharNext(lpsz);
-			}
 			PRINTER_DEFAULTS pdefs = { NULL, (DEVMODE*)pDevMode, PRINTER_ACCESS_USE };
-			::OpenPrinter(buffer, &m_hPrinter, (pDevMode == NULL) ? NULL : &pdefs);
+			::OpenPrinter(pszBuff, &m_hPrinter, (pDevMode == NULL) ? NULL : &pdefs);
 		}
+		delete [] pszBuff;
+
 		return m_hPrinter != NULL;
 	}
 
@@ -226,31 +221,43 @@ public:
 
 	HANDLE CopyToHDEVNAMES() const
 	{
-		HANDLE h = NULL;
+		HANDLE hDevNames = NULL;
 		CPrinterInfo<5> pinfon5;
 		CPrinterInfo<2> pinfon2;
 		LPTSTR lpszPrinterName = NULL;
+		LPTSTR lpszPortName = NULL;
 		// Some printers fail for PRINTER_INFO_5 in some situations
-		if (pinfon5.GetPrinterInfo(m_hPrinter))
-			lpszPrinterName = pinfon5.m_pi->pPrinterName;
-		else if (pinfon2.GetPrinterInfo(m_hPrinter))
-			lpszPrinterName = pinfon2.m_pi->pPrinterName;
-		if (lpszPrinterName != NULL)
+		if(pinfon5.GetPrinterInfo(m_hPrinter))
 		{
-			int nLen = sizeof(DEVNAMES) + (lstrlen(lpszPrinterName) + 1) * sizeof(TCHAR);
-			h = ::GlobalAlloc(GMEM_MOVEABLE, nLen);
-			BYTE* pv = (BYTE*)::GlobalLock(h);
+			lpszPrinterName = pinfon5.m_pi->pPrinterName;
+			lpszPortName = pinfon5.m_pi->pPortName;
+		}
+		else if(pinfon2.GetPrinterInfo(m_hPrinter))
+		{
+			lpszPrinterName = pinfon2.m_pi->pPrinterName;
+			lpszPortName = pinfon2.m_pi->pPortName;
+		}
+
+		if(lpszPrinterName != NULL)
+		{
+			int nLen = sizeof(DEVNAMES) + (lstrlen(lpszPrinterName) + 1 + lstrlen(lpszPortName) + 1) * sizeof(TCHAR);
+			hDevNames = ::GlobalAlloc(GMEM_MOVEABLE, nLen);
+			BYTE* pv = (BYTE*)::GlobalLock(hDevNames);
 			DEVNAMES* pdev = (DEVNAMES*)pv;
-			if (pv != NULL)
+			if(pv != NULL)
 			{
 				memset(pv, 0, nLen);
 				pdev->wDeviceOffset = sizeof(DEVNAMES) / sizeof(TCHAR);
 				pv = pv + sizeof(DEVNAMES); // now points to end
 				ATL::Checked::tcscpy_s((LPTSTR)pv, lstrlen(lpszPrinterName) + 1, lpszPrinterName);
-				::GlobalUnlock(h);
+				pdev->wOutputOffset = (WORD)(sizeof(DEVNAMES) / sizeof(TCHAR) + lstrlen(lpszPrinterName) + 1);
+				pv = pv + (lstrlen(lpszPrinterName) + 1) * sizeof(TCHAR);
+				ATL::Checked::tcscpy_s((LPTSTR)pv, lstrlen(lpszPortName) + 1, lpszPortName);
+				::GlobalUnlock(hDevNames);
 			}
 		}
-		return h;
+
+		return hDevNames;
 	}
 
 	HDC CreatePrinterDC(const DEVMODE* pdm = NULL) const
@@ -524,6 +531,9 @@ public:
 class ATL_NO_VTABLE CPrintJobInfo : public IPrintJobInfo
 {
 public:
+	CPrintJobInfo() : m_nPJState(0)
+	{ }
+
 	virtual void BeginPrintJob(HDC /*hDC*/)   // allocate handles needed, etc
 	{
 	}
@@ -574,8 +584,10 @@ public:
 	unsigned long m_nEndPage;
 
 // Constructor/destructor
-	CPrintJob() : m_nJobID(0), m_bCancel(false), m_bComplete(true)
-	{ }
+	CPrintJob() : m_pInfo(NULL), m_pDefDevMode(NULL), m_nJobID(0), m_bCancel(false), m_bComplete(true), m_nStartPage(0), m_nEndPage(0)
+	{
+		memset(&m_docinfo, 0, sizeof(m_docinfo));
+	}
 
 	~CPrintJob()
 	{
@@ -704,8 +716,11 @@ public:
 	DEVMODE* m_pCurDevMode;
 	SIZE m_sizeCurPhysOffset;
 
+// Implementation - data
+	int m_nCurPage;
+
 // Constructor
-	CPrintPreview() : m_pInfo(NULL), m_pDefDevMode(NULL), m_pCurDevMode(NULL)
+	CPrintPreview() : m_pInfo(NULL), m_pDefDevMode(NULL), m_pCurDevMode(NULL), m_nCurPage(0)
 	{
 		m_sizeCurPhysOffset.cx = 0;
 		m_sizeCurPhysOffset.cy = 0;
@@ -762,6 +777,11 @@ public:
 
 		CEnhMetaFileInfo emfinfo(m_meta);
 		ENHMETAHEADER* pmh = emfinfo.GetEnhMetaFileHeader();
+		if(pmh == NULL)
+		{
+			ATLASSERT(FALSE);
+			return;
+		}
 
 		// Compute whether we are OK vertically or horizontally
 		int x2 = pmh->szlDevice.cx;
@@ -795,15 +815,18 @@ public:
 	{
 		CEnhMetaFileInfo emfinfo(m_meta);
 		ENHMETAHEADER* pmh = emfinfo.GetEnhMetaFileHeader();
+		if(pmh == NULL)
+		{
+			ATLASSERT(FALSE);
+			return;
+		}
+
 		int nOffsetX = MulDiv(m_sizeCurPhysOffset.cx, rc.right-rc.left, pmh->szlDevice.cx);
 		int nOffsetY = MulDiv(m_sizeCurPhysOffset.cy, rc.bottom-rc.top, pmh->szlDevice.cy);
 
 		dc.OffsetWindowOrg(-nOffsetX, -nOffsetY);
 		dc.PlayMetaFile(m_meta, &rc);
 	}
-
-// Implementation - data
-	int m_nCurPage;
 };
 
 
@@ -814,12 +837,12 @@ template <class T, class TBase = ATL::CWindow, class TWinTraits = ATL::CControlW
 class ATL_NO_VTABLE CPrintPreviewWindowImpl : public ATL::CWindowImpl<T, TBase, TWinTraits>, public CPrintPreview
 {
 public:
-	DECLARE_WND_CLASS_EX(NULL, CS_VREDRAW | CS_HREDRAW, -1)
+	DECLARE_WND_CLASS_EX2(NULL, T, CS_VREDRAW | CS_HREDRAW, -1)
 
 	enum { m_cxOffset = 10, m_cyOffset = 10 };
 
 // Constructor
-	CPrintPreviewWindowImpl() : m_nMaxPage(0), m_nMinPage(0)
+	CPrintPreviewWindowImpl() : m_nMinPage(0), m_nMaxPage(0)
 	{ }
 
 // Operations
@@ -836,7 +859,7 @@ public:
 		if (m_nCurPage == m_nMaxPage)
 			return false;
 		SetPage(m_nCurPage + 1);
-		Invalidate();
+		this->Invalidate();
 		return true;
 	}
 
@@ -847,7 +870,7 @@ public:
 		if (m_nCurPage == 0)
 			return false;
 		SetPage(m_nCurPage - 1);
-		Invalidate();
+		this->Invalidate();
 		return true;
 	}
 
@@ -866,7 +889,7 @@ public:
 	LRESULT OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 	{
 		T* pT = static_cast<T*>(this);
-		RECT rc = { 0 };
+		RECT rc = {};
 
 		if(wParam != NULL)
 		{
@@ -886,11 +909,11 @@ public:
 // Painting helper
 	void DoPrePaint(CDCHandle dc, RECT& rc)
 	{
-		RECT rcClient = { 0 };
+		RECT rcClient = {};
 		this->GetClientRect(&rcClient);
 		RECT rcArea = rcClient;
 		T* pT = static_cast<T*>(this);
-		pT;   // avoid level 4 warning
+		(void)pT;   // avoid level 4 warning
 		::InflateRect(&rcArea, -pT->m_cxOffset, -pT->m_cyOffset);
 		if (rcArea.left > rcArea.right)
 			rcArea.right = rcArea.left;
@@ -1006,7 +1029,7 @@ public:
 	LRESULT OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 	{
 		T* pT = static_cast<T*>(this);
-		RECT rc = { 0 };
+		RECT rc = {};
 
 		if(wParam != NULL)
 		{
@@ -1047,11 +1070,11 @@ public:
 
 	void DoPrePaint(CDCHandle dc, RECT& rc)
 	{
-		RECT rcClient = { 0 };
+		RECT rcClient = {};
 		this->GetClientRect(&rcClient);
 		RECT rcArea = rcClient;
 		T* pT = static_cast<T*>(this);
-		pT;   // avoid level 4 warning
+		(void)pT;   // avoid level 4 warning
 		::InflateRect(&rcArea, -pT->m_cxOffset, -pT->m_cyOffset);
 		if (rcArea.left > rcArea.right)
 			rcArea.right = rcArea.left;
@@ -1075,6 +1098,12 @@ public:
 	{
 		CEnhMetaFileInfo emfinfo(this->m_meta);
 		ENHMETAHEADER* pmh = emfinfo.GetEnhMetaFileHeader();
+		if(pmh == NULL)
+		{
+			ATLASSERT(FALSE);
+			return;
+		}
+
 		int nOffsetX = MulDiv(this->m_sizeCurPhysOffset.cx, rc.right-rc.left, pmh->szlDevice.cx);
 		int nOffsetY = MulDiv(this->m_sizeCurPhysOffset.cy, rc.bottom-rc.top, pmh->szlDevice.cy);
 
@@ -1091,6 +1120,6 @@ public:
 
 #endif // __ATLSCRL_H__
 
-}; // namespace WTL
+} // namespace WTL
 
 #endif // __ATLPRINT_H__
