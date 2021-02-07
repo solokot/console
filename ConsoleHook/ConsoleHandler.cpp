@@ -527,8 +527,9 @@ void ConsoleHandler::ResizeConsoleWindow(DWORD& dwColumns, DWORD& dwRows, DWORD 
 
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	::GetConsoleScreenBufferInfo(hStdOut, &csbi);
-	TRACE(L"Console size: %ix%i\n", csbi.dwSize.X, csbi.dwSize.Y);
-	TRACE(L"Old win pos: %ix%i - %ix%i\n", csbi.srWindow.Left, csbi.srWindow.Top, csbi.srWindow.Right, csbi.srWindow.Bottom);
+	TRACE(L"1-console buffer size: %ix%i\n", csbi.dwSize.X, csbi.dwSize.Y);
+	TRACE(L"1-console rect: %ix%i - %ix%i\n", csbi.srWindow.Left, csbi.srWindow.Top, csbi.srWindow.Right, csbi.srWindow.Bottom);
+	TRACE(L"1-cursor position: %ix%i\n", csbi.dwCursorPosition.X, csbi.dwCursorPosition.Y);
 
   bool boolCursorVisible =
     csbi.dwCursorPosition.X >= csbi.srWindow.Left  &&
@@ -746,19 +747,43 @@ void ConsoleHandler::ResizeConsoleWindow(DWORD& dwColumns, DWORD& dwRows, DWORD 
 		::SetConsoleScreenBufferSize(hStdOut, finalCoordBufferSize);
 	}
 
-	TRACE(L"console buffer size: %ix%i\n", coordBufferSize.X, coordBufferSize.Y);
-	TRACE(L"console rect: %ix%i - %ix%i\n", finalConsoleRect.Left, finalConsoleRect.Top, finalConsoleRect.Right, finalConsoleRect.Bottom);
+	TRACE(L"2-console buffer size: %ix%i\n", coordBufferSize.X, coordBufferSize.Y);
+	TRACE(L"2-console rect: %ix%i - %ix%i\n", finalConsoleRect.Left, finalConsoleRect.Top, finalConsoleRect.Right, finalConsoleRect.Bottom);
 
-	::GetConsoleScreenBufferInfo(hStdOut, &csbi);
+	CONSOLE_SCREEN_BUFFER_INFO csbi2;
+	::GetConsoleScreenBufferInfo(hStdOut, &csbi2);
 
-	dwColumns = csbi.srWindow.Right  - csbi.srWindow.Left + 1;
-	dwRows    = csbi.srWindow.Bottom - csbi.srWindow.Top  + 1;
+	if( boolCursorVisible )
+	{
+		// on Windows 10, cursor position can change (word wrap)
+		//SHORT dX = csbi2.dwCursorPosition.X - csbi.dwCursorPosition.X;
+		if( csbi2.dwCursorPosition.Y < csbi2.srWindow.Top
+			  ||
+			  csbi2.dwCursorPosition.Y > csbi2.srWindow.Bottom )
+		{
+			finalConsoleRect = csbi2.srWindow;
+			SHORT dY = csbi2.srWindow.Bottom - csbi2.srWindow.Top;
+			finalConsoleRect.Bottom = csbi2.dwCursorPosition.Y;
+			finalConsoleRect.Top = finalConsoleRect.Bottom - dY;
+			if( finalConsoleRect.Top < 0 )
+			{
+				finalConsoleRect.Top = 0;
+				finalConsoleRect.Bottom = dY;
+			}
+
+			::SetConsoleWindowInfo(hStdOut, TRUE, &finalConsoleRect);
+		}
+	}
+
+	dwColumns = csbi2.srWindow.Right  - csbi2.srWindow.Left + 1;
+	dwRows    = csbi2.srWindow.Bottom - csbi2.srWindow.Top  + 1;
 
 	TRACE(L"Columns: %i\n", dwColumns);
 	TRACE(L"Rows: %i\n", dwRows);
 
-//	TRACE(L"console buffer size: %ix%i\n", csbi.dwSize.X, csbi.dwSize.Y);
-//	TRACE(L"console rect: %ix%i - %ix%i\n", csbi.srWindow.Left, csbi.srWindow.Top, csbi.srWindow.Right, csbi.srWindow.Bottom);
+	TRACE(L"3-console buffer size: %ix%i\n", csbi2.dwSize.X, csbi2.dwSize.Y);
+	TRACE(L"3-console rect: %ix%i - %ix%i\n", csbi2.srWindow.Left, csbi2.srWindow.Top, csbi2.srWindow.Right, csbi2.srWindow.Bottom);
+	TRACE(L"3-cursor position: %ix%i\n", csbi2.dwCursorPosition.X, csbi2.dwCursorPosition.Y);
 }
 
 //////////////////////////////////////////////////////////////////////////////
