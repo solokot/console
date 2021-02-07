@@ -1033,7 +1033,7 @@ BEGIN
 
     MSG_TABVIEW_RUNAS       "別のユーザーとして実行"
 
-    MSG_ABOUT               "\nConsoleZ\n%1%\n\nCopyright (c) 2011-2017\nChristophe Bucher\n\na modified version of\nConsole 2 from\nMarko Bozikovic"
+    MSG_ABOUT               "\nConsoleZ\n%1%\n\nCopyright (c) 2011-2021\nChristophe Bucher\n\na modified version of\nConsole 2 from\nMarko Bozikovic"
 END
 
 STRINGTABLE

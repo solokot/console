@@ -236,7 +236,7 @@ BEGIN
     CONTROL         "Иконк&а в трее",IDC_CHECK_STYLE_TRAY,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,130,27,100,16
     CONTROL         "Списо&к часто используемых (Win7)",IDC_CHECK_USE_JUMPLIST,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,130,43,100,16
     CONTROL         "Интеграция IME",IDC_CHECK_INTEGRATED_IME,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,130,59,100,16
-    CONTROL         "Мониторное DPI*",IDC_CHECK_PER_MONITOR_DPI,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,130,75,100,16
+    CONTROL         "DPI монитора*",IDC_CHECK_PER_MONITOR_DPI,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,130,75,100,16
 
     LTEXT           "Время анимации:",IDC_STATIC_QUAKE_1,12,94,55,8
     EDITTEXT        IDC_QUAKE_ANIMATION_TIME,80,91,40,14,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
@@ -724,13 +724,13 @@ BEGIN
         MENUITEM "Отслеживать клавиши и колесо мыши",        ID_FORWARD_MOUSE_EVENTS
         MENUITEM SEPARATOR
         MENUITEM "&Переименовать вкладку",                 ID_EDIT_RENAME_TAB
-        MENUITEM "Clone Tab",                   ID_CLONE_TAB
+        MENUITEM "Клонировать вкладку",                   ID_CLONE_TAB
         MENUITEM SEPARATOR
         MENUITEM "Разделить по &горизонтали",         ID_SPLIT_HORIZ
         MENUITEM "&Разделить по вертикали",           ID_SPLIT_VERT
         MENUITEM "Поменять местами",                  ID_SPLIT_SWAP
         MENUITEM "К&лонировать в новой  вкладке",           ID_CLONE_IN_NEW_TAB
-        MENUITEM "Move in New Tab",             ID_MOVE_IN_NEW_TAB
+        MENUITEM "Переместить в новую вкладку",             ID_MOVE_IN_NEW_TAB
         MENUITEM SEPARATOR
         MENUITEM "&Настройки...",                ID_EDIT_SETTINGS
     END
@@ -781,13 +781,13 @@ BEGIN
         MENUITEM "Отслеживать клавиши и колесо мыши",        ID_FORWARD_MOUSE_EVENTS
         MENUITEM SEPARATOR
         MENUITEM "&Переименовать вкладку",                 ID_EDIT_RENAME_TAB
-        MENUITEM "Clone Tab",                   ID_CLONE_TAB
+        MENUITEM "Клонировать вкладку",                   ID_CLONE_TAB
         MENUITEM SEPARATOR
         MENUITEM "Разделить по &горизонтали",         ID_SPLIT_HORIZ
         MENUITEM "&Разделить по вертикали",           ID_SPLIT_VERT
         MENUITEM "Поменять местами",                  ID_SPLIT_SWAP
         MENUITEM "К&лонировать в новой  вкладке",           ID_CLONE_IN_NEW_TAB
-        MENUITEM "Move in New Tab",             ID_MOVE_IN_NEW_TAB
+        MENUITEM "Переместить в новую вкладку",             ID_MOVE_IN_NEW_TAB
         MENUITEM SEPARATOR
         MENUITEM "&Окно консоли",             ID_VIEW_CONSOLE
     END
@@ -925,7 +925,7 @@ BEGIN
     ID_SPLIT_SWAP           "Поменять местами с предыдущим\nПоменять местами"
 
     ID_CLONE_IN_NEW_TAB     "Клонировать текущее окно в новую вкладку\nКлонировать в новую вкладку"
-    ID_MOVE_IN_NEW_TAB      "Move the current view in a new tab\nMove in New Tab"
+    ID_MOVE_IN_NEW_TAB      "Переместить текущее окно в новую вкладку\nПереместить в новую вкладку"
     ID_VIEW_FULLSCREEN      "Переключиться в полноэкранный режим\nНа весь экран"
     ID_VIEW_ALWAYS_ON_TOP   "Переключиться в режим поверх всех окон\nПоверх всех окон"
     ID_GROUP_ALL            "Объединить все терминалы так, что входные данные одного из них направлялись всем\nГруппировать все"
@@ -933,7 +933,7 @@ BEGIN
     ID_GROUP_TAB            "Объединить все терминалы вкладки так, что входные данные одного из них направлялись всем\nГруппировать вкладку"
     ID_UNGROUP_TAB          "Удалить объединение всех терминалов текущей вкладки\nРазгруппировать вкладку"
 
-    ID_CLONE_TAB            "Clone the whole current tab\nClone Tab"
+    ID_CLONE_TAB            "Клонировать всю текущую вкладку\nКлонировать вкладку"
 END
 
 STRINGTABLE
@@ -1033,7 +1033,7 @@ BEGIN
 
     MSG_TABVIEW_RUNAS       "Запустить от имени другого пользователя"
 
-    MSG_ABOUT               "\nConsoleZ\n%1%\n\nCopyright © 2011-2018\nChristophe Bucher\n\nмодифицированная\nверсия\nConsole 2\nMarko Bozikovic\nперевод koros@ya.ru,\nsolokot@gmail.com"
+    MSG_ABOUT               "\nConsoleZ\n%1%\n\nCopyright © 2011-2021\nChristophe Bucher\n\nмодифицированная\nверсия\nConsole 2\nMarko Bozikovic\nперевод koros@ya.ru,\nsolokot@gmail.com"
 END
 
 STRINGTABLE
@@ -1074,7 +1074,7 @@ BEGIN
 
     IDS_FILE_CLOSE_TAB       "Закрыть вкладку"
     IDS_EDIT_RENAME_TAB      "Переименовать вкладку"
-    IDS_CLONE_TAB            "Clone tab"
+    IDS_CLONE_TAB            "Клонировать вкладку"
 
     IDS_NEXT_VIEW            "Перейти на следующее окно"
     IDS_PREV_VIEW            "Перейти на предыдущее окно"
@@ -1100,7 +1100,7 @@ BEGIN
     IDS_SPLIT_VERT           "Разделить по вертикали"
     IDS_SPLIT_SWAP           "Поменять местами с предыдущим"
     IDS_CLONE_IN_NEW_TAB     "Клонировать окно в новую вкладку"
-    IDS_MOVE_IN_NEW_TAB      "Move view in new tab"
+    IDS_MOVE_IN_NEW_TAB      "Переместить в новую вкладку"
     IDS_VIEW_FULLSCREEN      "На весь экран"
     IDS_VIEW_ALWAYS_ON_TOP   "Поверх всех окон"
     IDS_VIEW_ZOOM_100        "Масштаб 100%"

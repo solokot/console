@@ -1033,7 +1033,7 @@ BEGIN
 
     MSG_TABVIEW_RUNAS       "Als Benutzer ausführen"
 
-    MSG_ABOUT               "\nConsoleZ\n%1%\n\nCopyright (c)2011-2017\nChristophe Bucher\n\na modifizierte Version von\nConsole 2 von\nMarko Bozikovic"
+    MSG_ABOUT               "\nConsoleZ\n%1%\n\nCopyright (c)2011-2021\nChristophe Bucher\n\na modifizierte Version von\nConsole 2 von\nMarko Bozikovic"
 END
 
 STRINGTABLE
