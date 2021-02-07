@@ -56,6 +56,7 @@ public:
   BOOL loadU(const wchar_t* lpszPathName)
 	{
 		std::ifstream file(lpszPathName, std::ios::binary | std::ios::ate);
+		if( file.fail() ) return FALSE;
 		std::streamsize size = file.tellg();
 		file.seekg(0, std::ios::beg);
 
