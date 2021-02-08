@@ -422,6 +422,21 @@ bool ImageHandler::GetDesktopImageData(ImageData& imageData)
 
 bool ImageHandler::GetBingImageData(ImageData& imageData)
 {
+#if _WIN32_WINNT >= 0x0600
+	// we check if internet connection is available
+	CComPtr<INetworkListManager> pNLM;
+	HRESULT hr = CoCreateInstance(CLSID_NetworkListManager, NULL, CLSCTX_ALL, __uuidof(INetworkListManager), (LPVOID*)&pNLM);
+	if( SUCCEEDED(hr) )
+	{
+		VARIANT_BOOL con;
+		hr = pNLM->get_IsConnected(&con);
+		if SUCCEEDED(hr)
+		{
+			if( con == VARIANT_FALSE ) return false;
+		}
+	}
+#endif
+
 	try
 	{
 		std::vector<char> content;
