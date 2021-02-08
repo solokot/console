@@ -114,6 +114,8 @@ LRESULT DlgSettingsHotkeys::OnListItemChanged(int /*idCtrl*/, LPNMHDR pnmh, BOOL
 
 LRESULT DlgSettingsHotkeys::OnBtnAssign(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+	if( m_hotKeyEdit.m_hWnd == GetFocus() ) return 0;
+
 	UINT	uiVirtualKeyCode= 0;
 	WORD	wModifiers		= 0;
 	LVITEM	selectedItem;
@@ -180,6 +182,8 @@ LRESULT DlgSettingsHotkeys::OnBtnAssign(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
 
 LRESULT DlgSettingsHotkeys::OnBtnClear(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+	if( m_hotKeyEdit.m_hWnd == GetFocus() ) return 0;
+
 	m_hotKeyEdit.SetHotKey(0, 0);
 	return 0;
 }
