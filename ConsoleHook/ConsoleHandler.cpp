@@ -275,7 +275,9 @@ void ConsoleHandler::RealReadConsoleBuffer()
 	SharedMemoryLock consoleInfoLock(m_consoleInfo);
 	SharedMemoryLock bufferLock(m_consoleBuffer);
 
-	::GetConsoleCursorInfo(hStdOut, m_cursorInfo.Get());
+	// GetConsoleCursorInfo requires read and write access
+	// so we use GetStdHandle here
+	::GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), m_cursorInfo.Get());
 
 	bool somethingChanged = false;
 
