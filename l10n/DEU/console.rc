@@ -698,8 +698,8 @@ BEGIN
         MENUITEM "&Ansicht schließen",                 ID_CLOSE_VIEW
         MENUITEM "&Ansicht trennen",                ID_DETACH_VIEW
         MENUITEM SEPARATOR
-        MENUITEM "Maximize View",               ID_MAXIMIZE_VIEW
-        MENUITEM "Restore View",                ID_RESTORE_VIEW
+        MENUITEM "Ansicht maximieren",               ID_MAXIMIZE_VIEW
+        MENUITEM "Ansicht wiederherstellen",                ID_RESTORE_VIEW
         MENUITEM SEPARATOR
         MENUITEM "Konsolen anhängen",             ID_ATTACH_CONSOLES
         MENUITEM SEPARATOR
@@ -724,13 +724,13 @@ BEGIN
         MENUITEM "Weitergabe Maus Events",        ID_FORWARD_MOUSE_EVENTS
         MENUITEM SEPARATOR
         MENUITEM "&Tab umbenennen",                 ID_EDIT_RENAME_TAB
-        MENUITEM "Clone Tab",                   ID_CLONE_TAB
+        MENUITEM "Dupliziere Tab",                   ID_CLONE_TAB
         MENUITEM SEPARATOR
         MENUITEM "Teilen &horizontal",         ID_SPLIT_HORIZ
         MENUITEM "Teilen &vertikal",           ID_SPLIT_VERT
         MENUITEM "Anzeige auswechseln",                  ID_SPLIT_SWAP
         MENUITEM "In neuen Tab duplizieren",           ID_CLONE_IN_NEW_TAB
-        MENUITEM "Move in New Tab",             ID_MOVE_IN_NEW_TAB
+        MENUITEM "Verschiebe in neuen Tabb",             ID_MOVE_IN_NEW_TAB
         MENUITEM SEPARATOR
         MENUITEM "Einstellungen...",                ID_EDIT_SETTINGS
     END
@@ -770,8 +770,8 @@ BEGIN
         MENUITEM "&Ansicht schließen",                 ID_CLOSE_VIEW
         MENUITEM "&Ansicht trennen",                ID_DETACH_VIEW
         MENUITEM SEPARATOR
-        MENUITEM "Maximize View",               ID_MAXIMIZE_VIEW
-        MENUITEM "Restore View",                ID_RESTORE_VIEW
+        MENUITEM "Ansicht maximieren",               ID_MAXIMIZE_VIEW
+        MENUITEM "Ansicht wiederherstellen",                ID_RESTORE_VIEW
         MENUITEM SEPARATOR
         MENUITEM "Einfügen Snippet",              ID_EDIT_INSERT_SNIPPET
         MENUITEM SEPARATOR
@@ -781,13 +781,13 @@ BEGIN
         MENUITEM "Weitergabe Maus Events",        ID_FORWARD_MOUSE_EVENTS
         MENUITEM SEPARATOR
         MENUITEM "&Tab umbenennen",                 ID_EDIT_RENAME_TAB
-        MENUITEM "Clone Tab",                   ID_CLONE_TAB
+        MENUITEM "Dupliziere Tab",                   ID_CLONE_TAB
         MENUITEM SEPARATOR
         MENUITEM "Teilen &horizontal",         ID_SPLIT_HORIZ
         MENUITEM "Teilen &vertikal",           ID_SPLIT_VERT
         MENUITEM "Anzeige auswechseln",                  ID_SPLIT_SWAP
         MENUITEM "In neuen Tab duplizieren",           ID_CLONE_IN_NEW_TAB
-        MENUITEM "Move in New Tab",             ID_MOVE_IN_NEW_TAB
+        MENUITEM "Verschiebe in neuen Tabb",             ID_MOVE_IN_NEW_TAB
         MENUITEM SEPARATOR
         MENUITEM "Konsolen Fenster",             ID_VIEW_CONSOLE
     END
@@ -919,13 +919,13 @@ BEGIN
     ID_DETACH_VIEW          "Aktuelle Ansicht abhängen\nAnsicht abhängen"
     ID_ATTACH_CONSOLES      "Konsole anhängen\nKonsolen anhängen"
     ID_LOAD_WORKSPACE       "Load workspace\nLoad workspace"
-    ID_SAVE_WORKSPACE       "Save workspace\nSave workspace"
+    ID_SAVE_WORKSPACE       "Speichern Arbeitsplatz\nSpeichern Arbeitsplatz"
     ID_SPLIT_HORIZ          "Aktuelle Ansicht horizontal teilen\nHorizontal teilen"
     ID_SPLIT_VERT           "Aktuelle Ansicht vertikal teilen\nVertikal teilen"
     ID_SPLIT_SWAP           "Mit vorheriger Ansicht mit Fokus austauschen\nAnsicht austauschen"
 
     ID_CLONE_IN_NEW_TAB     "Ansicht in neuem Tab klonen\nIn neuem Tab klonen"
-    ID_MOVE_IN_NEW_TAB      "Move the current view in a new tab\nMove in New Tab"
+    ID_MOVE_IN_NEW_TAB      "Verschiebe die aktuelle Ansicht in neuen Tab\nVerschiebe in neuen Tab"
     ID_VIEW_FULLSCREEN      "Vollbild ein-/ausschalten\nVollbild"
     ID_VIEW_ALWAYS_ON_TOP   "Fenster immer oben ein-/ausschalten\nImmer oben"
     ID_GROUP_ALL            "Alle Konsolen gruppieren, so dass Eingaben auf einem Tab auf allen anderen ausgeführt werden.\nTab Gruppe"
@@ -933,7 +933,7 @@ BEGIN
     ID_GROUP_TAB            "Alle Konsolen im aktuellen Tab gruppieren, so dass Eingaben in diesem Tab an allen ausgeführt werden.\nTab Gruppe"
     ID_UNGROUP_TAB          "Gruppierung von aktuellen Tab aufheben\nGruppierungen aufheben"
 
-    ID_CLONE_TAB            "Clone the whole current tab\nClone Tab"
+    ID_CLONE_TAB            "Klone den gesamten aktuellen Tab\nTab klonen"
 END
 
 STRINGTABLE
@@ -977,10 +977,10 @@ BEGIN
     IDS_ERR_CANT_GET_ELEVATION_TYPE "Erhöhte Rechte schlug fehl (Grund: %1%)!"
     IDS_ERR_TAB_CREATE_FAILED "Tab %1% Öffnen fehlgeschlagen!\nProzess %2% läuft vielleicht noch (Den Prozess mit dem Task Manager finden und schließen)"
     IDS_ERR_IS_NOT_A_WIN32_CONSOLE "%1% dies ist keine Win32 Konsolen Applikation"
-    IDS_ERR_CANT_GET_USER "Unable to get current user identity (reason: %1%)!"
-    IDS_ERR_XML_PARSING "XML parsing error (%1$#x) in file %2% on line %3% at column %4%: %5%"
+    IDS_ERR_CANT_GET_USER "Ermittlung der Benutzeridentität schlug fehl (Grund: %1%)!"
+    IDS_ERR_XML_PARSING "XML Parsingfehler (%1$#x) in file %2% in Zeile %3% in Spalte %4%: %5%"
     IDS_ERR_UNDEFINED_TAB "%1%: undefined tab"
-    IDS_ERR_CONSOLEZ_HOOKED "ConsoleZ launched ConsoleZ as shell. To prevent an infinite loop, ConsoleZ instance will be terminated."
+    IDS_ERR_CONSOLEZ_HOOKED "ConsoleZ startet ConsoleZ als shell. Um eine Endlosschleife zu verhindern, wurde die ConsoleZ Instanz beendet."
 END
 
 STRINGTABLE
@@ -1027,9 +1027,9 @@ BEGIN
     MSG_MAINFRAME_EXIT_FULLSCREEN
                             "Vollbild beenden"
     MSG_MAINFRAME_SYNTAX_ERROR
-                            "Syntax error bei Position %1%"
+                            "Syntax Fehler bei Position %1%"
     MSG_MAINFRAME_WORKSPACE_FILES
-                            "ConsoleZ workspace|*.workspace||"
+                            "ConsoleZ Arbeitsplatz|*.workspace||"
 
     MSG_TABVIEW_RUNAS       "Als Benutzer ausführen"
 
@@ -1069,8 +1069,8 @@ BEGIN
 
     IDS_NEXT_TAB             "Zum nächsten Tab wechseln"
     IDS_PREV_TAB             "Zum vorherigen Tab wechseln"
-    IDS_MOVE_TAB_LEFT        "Bewege Tab im Fokus nach links"
-    IDS_MOVE_TAB_RIGHT       "Bewege Tab im Fokus nach rechts"
+    IDS_MOVE_TAB_LEFT        "Verschiebe Tab im Fokus nach links"
+    IDS_MOVE_TAB_RIGHT       "Verschiebe Tab im Fokus nach rechts"
 
     IDS_FILE_CLOSE_TAB       "Tab schließen"
     IDS_EDIT_RENAME_TAB      "Tab umbenennen"
@@ -1092,15 +1092,15 @@ BEGIN
     IDS_DETACH_VIEW          "Ansicht abhängen"
     IDS_ATTACH_CONSOLES      "Konsole anhängen"
     IDS_LOAD_WORKSPACE       "Load workspace"
-    IDS_SAVE_WORKSPACE       "Save workspace"
-    IDS_FORWARD_MOUSE_EVENTS "Turn on/off mouse events forwarding"
+    IDS_SAVE_WORKSPACE       "Speichern Arbeitsplatz"
+    IDS_FORWARD_MOUSE_EVENTS "Mausevent-Weitergabe ein/ausschalten"
     IDS_MAXIMIZE_VIEW        "Maximize view"
     IDS_RESTORE_VIEW         "Restore view"
     IDS_SPLIT_HORIZ          "Horizontal teilen"
     IDS_SPLIT_VERT           "Vertikal teilen"
     IDS_SPLIT_SWAP           "Mit vorheriger Fokus-Ansicht austauschen"
     IDS_CLONE_IN_NEW_TAB     "Ansicht in neuem Tab klonen"
-    IDS_MOVE_IN_NEW_TAB      "Move view in new tab"
+    IDS_MOVE_IN_NEW_TAB      "Verschiebe Ansicht in neuen Tab"
     IDS_VIEW_FULLSCREEN      "Vollbild"
     IDS_VIEW_ALWAYS_ON_TOP   "Immer oben"
     IDS_VIEW_ZOOM_100        "Zoom 100%"
@@ -1177,7 +1177,7 @@ ID_COLUMN_SELECTION_PAGEDOWN_KEY  "Spalten Auswahl, Seite-Unten Taste"
 IDS_TABBINGFRAMEWORK_TIPS_SCROLLRIGHT "Scroll Right"
 IDS_TABBINGFRAMEWORK_TIPS_SCROLLLEFT  "Scroll Left"
 IDS_TABBINGFRAMEWORK_TIPS_CLOSE       "Close"
-IDS_TABBINGFRAMEWORK_TIPS_NEWTAB      "New Tab"
+IDS_TABBINGFRAMEWORK_TIPS_NEWTAB      "Neuer Tab"
 END
 
 STRINGTABLE
@@ -1231,7 +1231,7 @@ IDC_COMBO_BUTTONS            "Leer;Links;Rechts;Mitte;Viertes;Fünftes;"
 IDC_COMBO_BK_POS             "Zentrieren;Strecken,Titel,Passend,Füllen"
 IDC_COMBO_FULLSCREEN_MONITOR "Aktuell;"
 IDC_COMBO_BASE_PRIORITY      "Warten;Niedrig;Normal;Höher;Hoch;Echtzeit;"
-IDC_COMBO_STATE              "Normal window;Minimized;Maximized;Full screen;"
+IDC_COMBO_STATE              "Normales Fenster;Minimiert;Maximiert;Vollbild;"
 END
 
 #endif    // English (United States) resources
