@@ -1811,6 +1811,8 @@ void MainFrame::UpdateTabTitle(std::shared_ptr<TabView> tabView)
 
 	std::wstring strTabTitle = FormatTitle(windowSettings.strTabTitleFormat, tabView.get(), consoleView);
 
+	tabView->SetTabTitle(strTabTitle);
+
 	unsigned long long ullProgressCompleted = 0ULL;
 	unsigned long long ullProgressTotal     = 0ULL;
 	consoleView->GetProgress(ullProgressCompleted, ullProgressTotal);
@@ -3993,7 +3995,7 @@ void MainFrame::UpdateOpenedTabsMenu(CMenu& tabsMenu, bool bContextual)
 		auto hotK = g_settingsHandler->GetHotKeys().commands.get<HotKeys::commandID>().find(wId);
 
 		UpdateTabTitle(it->second);
-		std::wstring strTitle = it->second->GetTitle();
+		std::wstring strTitle = it->second->GetTabTitle();
 		if( hotK != g_settingsHandler->GetHotKeys().commands.get<HotKeys::commandID>().end() )
 		{
 			strTitle += L"\t";

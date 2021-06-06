@@ -521,6 +521,11 @@ void TabView::SetTitle(const std::wstring& strTitle)
 	m_strTitle = strTitle.empty()? m_tabData->strTitle : strTitle;
 }
 
+void TabView::SetTabTitle(const std::wstring& strTabTitle)
+{
+	m_strTabTitle = strTabTitle;
+}
+
 void TabView::SetActive(bool bActive)
 {
   MutexLock	viewMapLock(m_viewsMutex);

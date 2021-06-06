@@ -56,6 +56,8 @@ public:
 
   void SetTitle(const std::wstring& strTitle);
   const std::wstring& GetTitle() const { return m_strTitle; }
+  void SetTabTitle(const std::wstring& strTabTitle);
+  const std::wstring& GetTabTitle() const { return m_strTabTitle.empty() ? m_strTitle : m_strTabTitle; }
   CIcon& GetIcon(bool bBigIcon = true) { return bBigIcon ? m_bigIcon : m_smallIcon; }
   void SetActive(bool bActive);
   void SetAppActiveStatus(bool bAppActive);
@@ -108,6 +110,7 @@ private:
   CIcon               m_smallIcon;
   bool                m_boolIsGrouped;
 	std::wstring        m_strTitle;
+	std::wstring        m_strTabTitle;
 
   // static members
 private:
