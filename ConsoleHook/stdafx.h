@@ -28,13 +28,10 @@
 #include <string>
 #include <chrono>
 
-#pragma warning(push)
-#pragma warning(disable: 4244 4267 4511 4512 4702)
 #include <boost/format.hpp>
 #include <boost/mem_fn.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#pragma warning(pop)
 
 #include "../shared/SharedMemory.h"
 #include "../shared/Structures.h"

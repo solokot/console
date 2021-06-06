@@ -31,7 +31,7 @@
 #define _WTL_NO_WTYPES
 
 #pragma warning(push)
-#pragma warning(disable: 4091 4302 4458 4838 4996)
+#pragma warning(disable: 4091)
 #include <atlapp.h>
 
 extern CAppModule _Module;
@@ -112,10 +112,6 @@ an alternative solution is to add an additional library to your linker input, le
 #include <ShellScalingAPI.h>
 #endif
 
-#pragma warning(disable: 4503) // disables 'name truncated' warnings
-
-#pragma warning(push)
-#pragma warning(disable: 4702)
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -127,25 +123,18 @@ an alternative solution is to add an additional library to your linker input, le
 #include <regex>
 #include <chrono>
 #include <filesystem>
-#pragma warning(pop)
 
-#pragma warning(push)
-#pragma warning(disable: 4244 4267 4511 4512 701 4702)
 #define BOOST_ALL_NO_LIB
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
-#pragma warning(pop)
 
-#pragma warning(push)
-#pragma warning(disable: 4510 4610)
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 using namespace boost::multi_index;
-#pragma warning(pop)
 
 #include <WinInet.h>
 #if _WIN32_WINNT >= 0x0600
